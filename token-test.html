@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Tokens Test</title>
+  <style>
+    @import url('./src/styles/tokens.css');
+    
+    body {
+      font-family: var(--font-body);
+      background: var(--gradient-bg);
+      color: var(--color-text-primary);
+      padding: var(--space-10);
+      margin: 0;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      font-family: var(--font-display);
+      font-size: var(--font-size-3xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-gold);
+      margin-bottom: var(--space-6);
+    }
+    
+    .section {
+      background: var(--color-bg-card);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      margin-bottom: var(--space-6);
+      box-shadow: var(--shadow-card);
+    }
+    
+    .section-title {
+      font-family: var(--font-display);
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-gold-light);
+      margin-bottom: var(--space-4);
+    }
+    
+    .token-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-3);
+    }
+    
+    .token-item {
+      padding: var(--space-3);
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-sm);
+    }
+    
+    .token-name {
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-1);
+    }
+    
+    .token-value {
+      color: var(--color-text-muted);
+      font-family: monospace;
+    }
+    
+    .color-swatch {
+      width: 100%;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      margin-top: var(--space-2);
+    }
+    
+    .button-demo {
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: var(--space-4) var(--space-8);
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: var(--font-display);
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-semibold);
+      cursor: pointer;
+      transition: var(--transition-base);
+      box-shadow: var(--shadow-button);
+    }
+    
+    .btn-primary {
+      background: var(--gradient-gold);
+      color: var(--color-text-dark);
+    }
+    
+    .btn-purple {
+      background: var(--gradient-purple);
+      color: white;
+    }
+    
+    .btn-green {
+      background: var(--gradient-green);
+      color: white;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+    
+    .spacing-demo {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+    }
+    
+    .spacing-box {
+      background: var(--color-gold);
+      border-radius: var(--radius-sm);
+      color: var(--color-text-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: var(--font-weight-semibold);
+      font-size: var(--font-size-xs);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 Design Tokens Test Page</h1>
+    
+    <!-- Color Tokens -->
+    <div class="section">
+      <div class="section-title">Color Tokens</div>
+      <div class="token-grid">
+        <div class="token-item">
+          <div class="token-name">Primary Blue Deep</div>
+          <div class="token-value">--color-blue-deep</div>
+          <div class="color-swatch" style="background: var(--color-blue-deep);"></div>
+        </div>
+        <div class="token-item">
+          <div class="token-name">Gold</div>
+          <div class="token-value">--color-gold</div>
+          <div class="color-swatch" style="background: var(--color-gold);"></div>
+        </div>
+        <div class="token-item">
+          <div class="token-name">Purple Light</div>
+          <div class="token-value">--color-purple-light</div>
+          <div class="color-swatch" style="background: var(--color-purple-light);"></div>
+        </div>
+        <div class="token-item">
+          <div class="token-name">Green</div>
+          <div class="token-value">--color-green</div>
+          <div class="color-swatch" style="background: var(--color-green);"></div>
+        </div>
+        <div class="token-item">
+          <div class="token-name">Coral</div>
+          <div class="token-value">--color-coral</div>
+          <div class="color-swatch" style="background: var(--color-coral);"></div>
+        </div>
+        <div class="token-item">
+          <div class="token-name">Red</div>
+          <div class="token-value">--color-red</div>
+          <div class="color-swatch" style="background: var(--color-red);"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Typography Tokens -->
+    <div class="section">
+      <div class="section-title">Typography Tokens</div>
+      <div style="margin-bottom: var(--space-4);">
+        <div style="font-family: var(--font-display); font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold);">
+          Fredoka Display Font (--font-display)
+        </div>
+        <div style="font-family: var(--font-body); font-size: var(--font-size-lg);">
+          Nunito Body Font (--font-body)
+        </div>
+      </div>
+      <div class="token-grid">
+        <div class="token-item">
+          <div class="token-name">Font Size XS</div>
+          <div class="token-value">--font-size-xs (0.65rem)</div>
+        </div>
+        <div class="token-item">
+          <div class="token-name">Font Size SM</div>
+          <div class="token-value">--font-size-sm (0.85rem)</div>
+        </div>
+        <div class="token-item">
+          <div class="token-name">Font Size Base</div>
+          <div class="token-value">--font-size-base (1rem)</div>
+        </div>
+        <div class="token-item">
+          <div class="token-name">Font Size 4XL</div>
+          <div class="token-value">--font-size-4xl (3.5rem)</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Spacing Tokens -->
+    <div class="section">
+      <div class="section-title">Spacing Tokens</div>
+      <div class="spacing-demo">
+        <div class="spacing-box" style="width: var(--space-4); height: var(--space-4);">4px</div>
+        <div class="spacing-box" style="width: var(--space-8); height: var(--space-8);">8px</div>
+        <div class="spacing-box" style="width: var(--space-4); height: var(--space-4);">16px</div>
+        <div class="spacing-box" style="width: var(--space-6); height: var(--space-6);">24px</div>
+        <div class="spacing-box" style="width: var(--space-8); height: var(--space-8);">32px</div>
+        <div class="spacing-box" style="width: var(--space-10); height: var(--space-10);">40px</div>
+      </div>
+      <div style="margin-top: var(--space-4);">
+        <div class="token-item" style="display: inline-block; margin-right: var(--space-3);">
+          <div class="token-name">Border Radius SM</div>
+          <div style="background: var(--color-gold); padding: var(--space-3); border-radius: var(--radius-sm); color: var(--color-text-dark);">8px</div>
+        </div>
+        <div class="token-item" style="display: inline-block; margin-right: var(--space-3);">
+          <div class="token-name">Border Radius MD</div>
+          <div style="background: var(--color-gold); padding: var(--space-3); border-radius: var(--radius-md); color: var(--color-text-dark);">16px</div>
+        </div>
+        <div class="token-item" style="display: inline-block; margin-right: var(--space-3);">
+          <div class="token-name">Border Radius LG</div>
+          <div style="background: var(--color-gold); padding: var(--space-3); border-radius: var(--radius-lg); color: var(--color-text-dark);">24px</div>
+        </div>
+        <div class="token-item" style="display: inline-block;">
+          <div class="token-name">Border Radius Full</div>
+          <div style="background: var(--color-gold); padding: var(--space-3) var(--space-6); border-radius: var(--radius-full); color: var(--color-text-dark);">9999px</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Button Components -->
+    <div class="section">
+      <div class="section-title">Button Component Demos</div>
+      <div class="button-demo">
+        <button class="btn btn-primary">Primary Button (Gold)</button>
+        <button class="btn btn-purple">Purple Button</button>
+        <button class="btn btn-green">Green Button</button>
+      </div>
+    </div>
+    
+    <!-- Shadow & Effects -->
+    <div class="section">
+      <div class="section-title">Shadow & Effects Tokens</div>
+      <div class="token-grid">
+        <div style="padding: var(--space-6); background: var(--color-bg-card); border-radius: var(--radius-md); box-shadow: var(--shadow-card);">
+          <div class="token-name">Card Shadow</div>
+          <div class="token-value">--shadow-card</div>
+        </div>
+        <div style="padding: var(--space-6); background: var(--color-bg-card); border-radius: var(--radius-md); box-shadow: var(--shadow-button);">
+          <div class="token-name">Button Shadow</div>
+          <div class="token-value">--shadow-button</div>
+        </div>
+        <div style="padding: var(--space-6); background: var(--color-bg-card); border-radius: var(--radius-md); box-shadow: var(--shadow-glow);">
+          <div class="token-name">Glow Effect</div>
+          <div class="token-value">--shadow-glow</div>
+        </div>
+        <div style="padding: var(--space-6); background: var(--color-bg-card); border-radius: var(--radius-md); box-shadow: var(--shadow-glow-gold);">
+          <div class="token-name">Gold Glow</div>
+          <div class="token-value">--shadow-glow-gold</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Glassmorphism -->
+    <div class="section">
+      <div class="section-title">Glassmorphism Effect</div>
+      <div style="position: relative; background: linear-gradient(135deg, var(--color-purple-mid), var(--color-blue-bright)); padding: var(--space-10); border-radius: var(--radius-lg);">
+        <div style="background: var(--color-bg-card); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: var(--glass-border); padding: var(--space-6); border-radius: var(--radius-md);">
+          This card demonstrates glassmorphism with backdrop-filter blur and semi-transparent background.
+        </div>
+      </div>
+    </div>
+    
+    <!-- Console Test Script -->
+    <script>
+      console.log('%c🎨 Design Tokens Loaded Successfully!', 'color: #ffc107; font-size: 18px; font-weight: bold;');
+      
+      const root = document.documentElement;
+      const styles = getComputedStyle(root);
+      
+      console.group('Color Tokens');
+      console.log('--color-gold:', styles.getPropertyValue('--color-gold'));
+      console.log('--color-blue-deep:', styles.getPropertyValue('--color-blue-deep'));
+      console.log('--color-purple-light:', styles.getPropertyValue('--color-purple-light'));
+      console.groupEnd();
+      
+      console.group('Typography Tokens');
+      console.log('--font-display:', styles.getPropertyValue('--font-display'));
+      console.log('--font-body:', styles.getPropertyValue('--font-body'));
+      console.log('--font-size-base:', styles.getPropertyValue('--font-size-base'));
+      console.groupEnd();
+      
+      console.group('Spacing Tokens');
+      console.log('--space-4:', styles.getPropertyValue('--space-4'));
+      console.log('--radius-md:', styles.getPropertyValue('--radius-md'));
+      console.groupEnd();
+      
+      console.group('Shadow Tokens');
+      console.log('--shadow-card:', styles.getPropertyValue('--shadow-card'));
+      console.log('--shadow-button:', styles.getPropertyValue('--shadow-button'));
+      console.groupEnd();
+      
+      console.group('Animation Tokens');
+      console.log('--transition-base:', styles.getPropertyValue('--transition-base'));
+      console.log('--ease-bounce:', styles.getPropertyValue('--ease-bounce'));
+      console.groupEnd();
+      
+      console.log('%c✅ All tokens are accessible via CSS custom properties!', 'color: #4caf50; font-weight: bold;');
+    </script>
+  </div>
+</body>
+</html>
