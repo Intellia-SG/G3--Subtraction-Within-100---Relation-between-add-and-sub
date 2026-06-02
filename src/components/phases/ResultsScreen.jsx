@@ -9,21 +9,24 @@ export default function ResultsScreen({ state, dispatch }) {
   const earnedBadges = BADGES.filter((b) => state.badges.includes(b.id));
 
   return (
-    <div>
-      {/* Hero */}
-      <div className="card card-blue" style={{ textAlign: 'center', padding: '26px 18px' }}>
-        <div style={{ fontSize: 56, marginBottom: 6 }}>🌟</div>
-        <h1 style={{ color: '#fff', marginBottom: 4 }}>Amazing Work!</h1>
-        <p style={{ opacity: 0.85, margin: '4px 0 10px', fontSize: 14 }}>
-          You've completed the Subtraction within 100 module!
+    <div className="results-screen">
+      {/* Trophy and celebration */}
+      <div className="results-hero">
+        <div className="results-trophy">🏆</div>
+        <h1 className="results-title">Journey Complete!</h1>
+        <p className="results-subtitle">
+          You've mastered subtraction within 100!
         </p>
-        <div style={{ fontFamily: 'Fredoka One, cursive', fontSize: 30, color: '#F5A623' }}>
-          {state.xp} XP Earned!
+        
+        {/* XP Circle Badge */}
+        <div className="results-xp-circle">
+          <div className="xp-circle-value">{state.xp}</div>
+          <div className="xp-circle-label">XP Earned</div>
         </div>
       </div>
 
       {/* Stats grid */}
-      <div className="stats-grid">
+      <div className="results-stats-grid">
         {[
           [String(state.stars),   '⭐ Stars'],
           [String(worldsDone),    '🌍 Worlds'],
@@ -31,66 +34,62 @@ export default function ResultsScreen({ state, dispatch }) {
           [String(total),         '✓ Correct'],
           [`${pct}%`,             'Accuracy'],
           [String(earnedBadges.length), '🏅 Badges'],
-        ].map(([v, l]) => (
-          <div className="stat-box" key={l}>
-            <div className="stat-n">{v}</div>
-            <div className="stat-l">{l}</div>
+        ].map(([value, label]) => (
+          <div className="results-stat-box" key={label}>
+            <div className="results-stat-value">{value}</div>
+            <div className="results-stat-label">{label}</div>
           </div>
         ))}
       </div>
 
-      {/* Badges */}
-      <div className="card">
-        <h3>🏅 Badges ({earnedBadges.length}/{BADGES.length})</h3>
-        <div className="badges-earn">
-          {BADGES.map((b) => {
-            const earned = state.badges.includes(b.id);
-            return (
-              <div key={b.id} className={`bcard${earned ? ' un' : ''}`}>
-                <div className="b-ico">{b.label.split(' ')[0]}</div>
-                <div className="b-lbl">{b.label.split(' ').slice(1).join(' ')}</div>
-                {!earned && <div style={{ fontSize: 9, color: '#ADB5BD', marginTop: 2 }}>{b.desc}</div>}
-              </div>
-            );
-          })}
+      {/* Earned badges */}
+      <div className="glass-card results-badges-card">
+        <h3 className="results-section-title">
+          🏅 Earned Badges ({earnedBadges.length}/{BADGES.length})
+        </h3>
+        <div className="results-badges-grid">
+          {earnedBadges.map((badge) => (
+            <div key={badge.id} className="results-badge-item">
+              <div className="results-badge-icon">{badge.label.split(' ')[0]}</div>
+              <div className="results-badge-name">{badge.label.split(' ').slice(1).join(' ')}</div>
+            </div>
+          ))}
+          {earnedBadges.length === 0 && (
+            <p className="results-no-badges">No badges earned yet — keep practicing!</p>
+          )}
         </div>
       </div>
 
-      {/* World results */}
-      <div className="card">
-        <h3>📊 World Results</h3>
-        <div className="world-results">
-          {WORLDS.map((w, i) => {
-            const sc = state.ws[i];
-            const st = sc !== null ? calcStars(sc) : 0;
-            return (
-              <div className="wr-row" key={i}>
-                <span>{w.emoji} {w.name}</span>
-                {sc !== null
-                  ? <span style={{ color: '#27AE60' }}>{sc}/10 {'⭐'.repeat(st)}</span>
-                  : <span style={{ color: '#ADB5BD' }}>—</span>}
-              </div>
-            );
-          })}
+      {/* Phase completion checkmarks */}
+      <div className="glass-card results-phases-card">
+        <h3 className="results-section-title">✅ Phase Completion</h3>
+        <div className="results-phases-grid">
+          {['🔍 Wonder', '📖 Story', '🔬 Simulate', '🎮 Play', '✨ Reflect'].map((phase) => (
+            <div key={phase} className="results-phase-item">
+              <span className="phase-check">✓</span>
+              <span>{phase}</span>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* Key takeaway */}
-      <div style={{ background: '#D4EDDA', borderRadius: 14, padding: 16, marginBottom: 12, textAlign: 'center' }}>
-        <div style={{ fontSize: 30, marginBottom: 6 }}>💡</div>
-        <h3 style={{ color: '#155724', fontFamily: 'Fredoka One, cursive', fontSize: 16, marginBottom: 5 }}>
-          Key Takeaway
-        </h3>
-        <p style={{ color: '#155724', fontSize: 13, lineHeight: 1.6 }}>
+      <div className="results-takeaway">
+        <div className="takeaway-icon">💡</div>
+        <h3 className="takeaway-title">Key Takeaway</h3>
+        <p className="takeaway-text">
           Addition and subtraction are <strong>inverse operations</strong>. Knowing{' '}
           <strong>a + b = c</strong> instantly gives you <strong>c − a = b</strong> and{' '}
           <strong>c − b = a</strong>!
         </p>
       </div>
 
-      <button className="btn btn-p btn-lg btn-full" onClick={() => dispatch({ t: 'RESTART' })}>
-        🔄 Start Again
-      </button>
+      {/* Action buttons */}
+      <div className="results-actions">
+        <button className="btn btn-p btn-lg btn-full" onClick={() => dispatch({ t: 'RESTART' })}>
+          🔄 Start New Journey
+        </button>
+      </div>
     </div>
   );
 }

@@ -8,62 +8,88 @@ function resolveVis(visKey) {
   if (!visKey) return null;
   if (visKey === 'triangle-missing')
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}>
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
         <FactFamilyTriangle whole={63} part1={27} part2={36} missing="part2" size={120} />
       </div>
     );
   if (visKey === 'triangle-complete')
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}>
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
         <FactFamilyTriangle whole={63} part1={27} part2={36} size={120} />
       </div>
     );
   return null;
 }
 
-export default function StoryPhase({ onDone }) {
+export default function StoryPhase({ onComplete }) {
   const [p, setP] = useState(0);
   const cur = PANELS[p];
-  const pct = Math.round(((p + 1) / PANELS.length) * 100);
+  const progress = ((p + 1) / PANELS.length) * 100;
 
   return (
-    <div>
-      <div className="pbadge pb-story">Phase 2 · Story 📖</div>
+    <div className="story-phase">
+      <div className="phase-badge badge-story">Phase 2 · Story 📖</div>
 
-      {/* Progress bar */}
-      <div style={{ background: '#EEF4FB', borderRadius: 10, height: 5, marginBottom: 12, overflow: 'hidden' }}>
-        <div style={{ background: '#1A5EAB', height: '100%', width: `${pct}%`, borderRadius: 10, transition: 'width .4s ease' }} />
+      {/* Progress bar with gold-purple gradient */}
+      <div className="story-progress-container">
+        <div className="story-progress-bar">
+          <div 
+            className="story-progress-fill" 
+            style={{ width: `${progress}%` }}
+          />
+        </div>
       </div>
 
-      <div className="card" style={{ animation: 'slideUp .3s ease' }}>
-        <div style={{ fontSize: 10, fontWeight: 800, color: '#85929E', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: 8 }}>
+      {/* Story card with glass effect */}
+      <div className="story-card glass-card">
+        {/* Story title */}
+        <div className="story-title">
           🥪 The Magic Sandwich Shop · Panel {p + 1}/{PANELS.length}
         </div>
 
-        <ImgPH src={cur.img} alt={cur.imgAlt} />
+        {/* Image section with gradient overlay */}
+        <div className="story-image-section">
+          <ImgPH src={cur.img} alt={cur.imgAlt} />
+          <div className="story-image-overlay"></div>
+        </div>
 
-        <div className="story-nar">{cur.nar}</div>
-        {cur.dlg && <div className="story-dlg">"{cur.dlg}"</div>}
-        {resolveVis(cur.visKey)}
+        {/* Story text with fade-in animation */}
+        <div className="story-text-container">
+          <div className="story-narration">{cur.nar}</div>
+          {cur.dlg && <div className="story-dialogue">"{cur.dlg}"</div>}
+          {resolveVis(cur.visKey)}
+        </div>
       </div>
 
-      <div className="panel-nav">
-        <button className="btn btn-o btn-sm" onClick={() => setP((v) => v - 1)} disabled={p === 0}>
+      {/* Navigation with dots */}
+      <div className="story-navigation">
+        <button 
+          className="btn btn-o btn-sm" 
+          onClick={() => setP((v) => v - 1)} 
+          disabled={p === 0}
+        >
           ← Back
         </button>
 
-        <div className="p-step-dots">
+        {/* Navigation dots */}
+        <div className="story-dots">
           {PANELS.map((_, i) => (
-            <div key={i} className={`psd${i === p ? ' cur' : i < p ? ' done' : ''}`} />
+            <div 
+              key={i} 
+              className={`story-dot ${i === p ? 'active' : ''} ${i < p ? 'completed' : ''}`}
+            />
           ))}
         </div>
 
         {p < PANELS.length - 1 ? (
-          <button className="btn btn-p btn-sm" onClick={() => setP((v) => v + 1)}>
+          <button 
+            className="btn btn-p btn-sm" 
+            onClick={() => setP((v) => v + 1)}
+          >
             Next →
           </button>
         ) : (
-          <button className="btn btn-g" onClick={onDone}>
+          <button className="btn btn-g" onClick={onComplete}>
             Simulate! 🔬
           </button>
         )}

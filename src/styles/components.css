@@ -109,6 +109,17 @@
   font-size: var(--font-size-lg);
 }
 
+.btn-full {
+  width: 100%;
+}
+
+/* Shorthand aliases */
+.btn-p { background: var(--gradient-gold); color: var(--color-text-dark); }
+.btn-g { background: var(--gradient-green); color: white; }
+.btn-gn { background: var(--gradient-green); color: white; }
+.btn-o { background: transparent; border: 2px solid rgba(255, 255, 255, 0.3); color: var(--color-text-primary); }
+.btn-o:hover:not(:disabled) { border-color: var(--color-gold); color: var(--color-gold); }
+
 /* ==================== PROGRESS INDICATORS ==================== */
 
 .progress-dots {

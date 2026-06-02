@@ -1,15 +1,24 @@
 export default function IntroScreen({ onStart }) {
   return (
-    <div className="card intro-hero">
-      <span className="mascot-big" role="img" aria-label="Robot mascot">🤖</span>
-      <h1>Subtraction within 100</h1>
-      <p className="intro-sub">Using the Relationship Between + and −</p>
-      <p style={{ color: '#85929E', fontSize: 12, marginBottom: 18 }}>
-        Grade 2 Math · Singapore MOE Primary 2 · Module G2-MATH-SUB100-001
+    <div className="intro-screen">
+      {/* Module Badge */}
+      <div className="module-badge">
+        Grade 2 • Singapore Math
+      </div>
+
+      {/* Module Title */}
+      <h1 className="module-title">
+        Subtraction within 100
+      </h1>
+
+      {/* Module Description */}
+      <p className="module-description">
+        Using the Relationship Between Addition and Subtraction
       </p>
 
-      <div style={{ background: '#EEF4FB', borderRadius: 12, padding: '12px 14px', marginBottom: 16, textAlign: 'left' }}>
-        <div style={{ fontWeight: 800, color: '#0D3B6E', fontSize: 13, marginBottom: 6 }}>
+      {/* Learning Objectives Box */}
+      <div className="learning-objectives">
+        <div className="objectives-title">
           🎯 You will learn to:
         </div>
         {[
@@ -17,27 +26,41 @@ export default function IntroScreen({ onStart }) {
           'Build fact family triangles with 4 related equations',
           'Subtract 2-digit numbers within 100',
           'Solve real-world subtraction problems',
-        ].map((l) => (
-          <div key={l} style={{ fontSize: 12, color: '#4A5568', padding: '2px 0', display: 'flex', gap: 6, alignItems: 'flex-start' }}>
-            <span>✓</span><span>{l}</span>
+        ].map((objective, i) => (
+          <div key={i} className="objective-item">
+            <span className="check-mark">✓</span>
+            <span>{objective}</span>
           </div>
         ))}
       </div>
 
-      <div className="journey-grid">
-        {[['🔍','1','Wonder'],['📖','2','Story'],['🔬','3','Simulate'],['🎮','4','Play'],['✨','5','Reflect']].map(([ic, n, name]) => (
-          <div className="j-item" key={n}>
-            <div className="j-icon">{ic}</div>
-            <div className="j-num">{n}</div>
-            <div className="j-name">{name}</div>
-          </div>
-        ))}
+      {/* Journey Preview */}
+      <div className="journey-preview-card">
+        <div className="journey-preview-title">Your Learning Journey</div>
+        <div className="journey-preview-grid">
+          {[
+            { icon: '🔍', number: '1', name: 'Wonder', desc: 'Spark curiosity' },
+            { icon: '📖', number: '2', name: 'Story', desc: 'Learn concept' },
+            { icon: '🔬', number: '3', name: 'Simulate', desc: 'Explore models' },
+            { icon: '🎮', number: '4', name: 'Play', desc: 'Practice skills' },
+            { icon: '✨', number: '5', name: 'Reflect', desc: 'Think deeply' }
+          ].map((phase) => (
+            <div key={phase.number} className="journey-phase-item">
+              <div className="phase-icon-circle">{phase.icon}</div>
+              <div className="phase-number">{phase.number}</div>
+              <div className="phase-name">{phase.name}</div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <button className="btn btn-p btn-lg btn-full" onClick={onStart}>
-        Start Learning! 🚀
+      {/* Start Button */}
+      <button className="btn btn-p btn-lg btn-full intro-start-btn" onClick={onStart}>
+        Start Journey! 🚀
       </button>
-      <p style={{ fontSize: 11, color: '#ADB5BD', marginTop: 10 }}>
+
+      {/* Module Info */}
+      <p className="module-info">
         ~16 min · 100 practice questions · 6 badges to earn
       </p>
     </div>

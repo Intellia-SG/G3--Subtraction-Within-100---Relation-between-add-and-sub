@@ -40,51 +40,65 @@ export default function ReflectPhase({ state, onDone }) {
   const allAnswered = REFLECT_QS.every((_, i) => answers[i] !== undefined);
 
   return (
-    <div>
-      <div className="pbadge pb-reflect">Phase 5 · Reflect ✨</div>
+    <div className="reflect-phase">
+      <div className="phase-badge badge-reflect">Phase 5 · Reflect ✨</div>
 
-      <div className="card">
-        <h2>🌟 Reflect on Your Learning</h2>
-        <p style={{ color: '#85929E', marginBottom: 16, fontSize: 13 }}>
+      <div className="glass-card reflect-card">
+        <h2 className="reflect-title">🌟 Reflect on Your Learning</h2>
+        <p className="reflect-subtitle">
           Think carefully about what you've discovered today!
         </p>
 
         {/* Journey stats */}
-        <div style={{ background: '#EEF4FB', borderRadius: 10, padding: 11, marginBottom: 18, display: 'flex', gap: 12, justifyContent: 'center' }}>
-          {[[`⭐ ${state.stars}`, 'Stars'], [`⚡ ${state.xp}`, 'XP'], [`🔥 ${state.maxStr}`, 'Best Streak']].map(([v, l]) => (
-            <div key={l} style={{ textAlign: 'center' }}>
-              <div style={{ fontWeight: 800, fontSize: 15, color: '#0D3B6E' }}>{v}</div>
-              <div style={{ fontSize: 10, color: '#85929E', fontWeight: 800 }}>{l}</div>
+        <div className="reflect-stats">
+          {[
+            [`⭐ ${state.stars}`, 'Stars'], 
+            [`⚡ ${state.xp}`, 'XP'], 
+            [`🔥 ${state.maxStr}`, 'Best Streak']
+          ].map(([value, label]) => (
+            <div key={label} className="reflect-stat-item">
+              <div className="reflect-stat-value">{value}</div>
+              <div className="reflect-stat-label">{label}</div>
             </div>
           ))}
         </div>
 
+        {/* Reflection questions */}
         {REFLECT_QS.map((rq, i) => (
-          <div key={i} style={{ marginBottom: 16 }}>
-            <h3 style={{ marginBottom: 8 }}>{i + 1}. {rq.q}</h3>
-            {rq.opts.map((opt) => (
-              <div
-                key={opt}
-                className={`rq${answers[i] === opt ? ' sel' : ''}`}
-                onClick={() => setAnswers((a) => ({ ...a, [i]: opt }))}
-                role="radio"
-                aria-checked={answers[i] === opt}
-                tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && setAnswers((a) => ({ ...a, [i]: opt }))}
-              >
-                <div className="rq-radio" />
-                {opt}
-              </div>
-            ))}
+          <div key={i} className="reflect-question">
+            <h3 className="reflect-question-title">
+              {i + 1}. {rq.q}
+            </h3>
+            <div className="reflect-options">
+              {rq.opts.map((opt) => (
+                <div
+                  key={opt}
+                  className={`reflect-option ${answers[i] === opt ? 'selected' : ''}`}
+                  onClick={() => setAnswers((a) => ({ ...a, [i]: opt }))}
+                  role="radio"
+                  aria-checked={answers[i] === opt}
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === 'Enter' && setAnswers((a) => ({ ...a, [i]: opt }))}
+                >
+                  <div className="reflect-radio" />
+                  <span>{opt}</span>
+                </div>
+              ))}
+            </div>
           </div>
         ))}
       </div>
 
-      <button className="btn btn-g btn-lg btn-full" disabled={!allAnswered} onClick={onDone}>
+      <button 
+        className="btn btn-g btn-lg btn-full reflect-complete-btn" 
+        disabled={!allAnswered} 
+        onClick={onDone}
+      >
         Complete My Journey! 🌟
       </button>
+      
       {!allAnswered && (
-        <p style={{ textAlign: 'center', fontSize: 11, color: '#ADB5BD', marginTop: 7 }}>
+        <p className="reflect-hint">
           Answer all {REFLECT_QS.length} questions to continue
         </p>
       )}
