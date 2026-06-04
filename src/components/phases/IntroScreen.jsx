@@ -1,68 +1,80 @@
+import { useEffect, useRef } from 'react';
+
+const JOURNEY_PHASES = [
+  { icon: '🔍', label: 'Wonder',   desc: 'A subtraction mystery!' },
+  { icon: '📖', label: 'Story',    desc: 'See it in action' },
+  { icon: '🧪', label: 'Simulate', desc: 'Explore the models' },
+  { icon: '🎮', label: 'Play',     desc: 'Gamified challenges' },
+  { icon: '📓', label: 'Reflect',  desc: 'What did you learn?' },
+];
+
 export default function IntroScreen({ onStart }) {
   return (
     <div className="intro-screen">
-      {/* Module Badge */}
-      <div className="module-badge">
-        Grade 2 • Singapore Math
+      {/* Curriculum badge */}
+      <div className="intro-badge">
+        ✨ · Grade 2 Maths
       </div>
 
-      {/* Module Title */}
-      <h1 className="module-title">
-        Subtraction within 100
+      {/* Title */}
+      <h1 className="intro-title">
+        <span style={{ color: 'var(--coral)' }}>Subtraction</span>{' '}Within{' '}
+        <span style={{ color: 'var(--gold)' }}>100</span>
       </h1>
-
-      {/* Module Description */}
-      <p className="module-description">
-        Using the Relationship Between Addition and Subtraction
+      <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', marginTop: 4, fontFamily: 'var(--font-display)' }}>
+        Lesson 3.3 · Relationship between + and −
       </p>
 
-      {/* Learning Objectives Box */}
-      <div className="learning-objectives">
-        <div className="objectives-title">
-          🎯 You will learn to:
+      {/* Mascot */}
+      <div className="mascot-container">
+        <div className="mascot">🤖</div>
+        <div className="speech-bubble">
+          Let's crack the fact families! 🔍
         </div>
-        {[
-          'Use addition facts to find subtraction facts instantly',
-          'Build fact family triangles with 4 related equations',
-          'Subtract 2-digit numbers within 100',
-          'Solve real-world subtraction problems',
-        ].map((objective, i) => (
-          <div key={i} className="objective-item">
-            <span className="check-mark">✓</span>
-            <span>{objective}</span>
-          </div>
-        ))}
       </div>
 
-      {/* Journey Preview */}
-      <div className="journey-preview-card">
-        <div className="journey-preview-title">Your Learning Journey</div>
-        <div className="journey-preview-grid">
-          {[
-            { icon: '🔍', number: '1', name: 'Wonder', desc: 'Spark curiosity' },
-            { icon: '📖', number: '2', name: 'Story', desc: 'Learn concept' },
-            { icon: '🔬', number: '3', name: 'Simulate', desc: 'Explore models' },
-            { icon: '🎮', number: '4', name: 'Play', desc: 'Practice skills' },
-            { icon: '✨', number: '5', name: 'Reflect', desc: 'Think deeply' }
-          ].map((phase) => (
-            <div key={phase.number} className="journey-phase-item">
-              <div className="phase-icon-circle">{phase.icon}</div>
-              <div className="phase-number">{phase.number}</div>
-              <div className="phase-name">{phase.name}</div>
+      {/* Description */}
+      <p className="intro-desc">
+        Learn to use <strong style={{ color: 'var(--gold)' }}>addition facts</strong> to solve subtraction problems, build fact family triangles, and conquer challenges within 100!
+      </p>
+
+      {/* Journey map */}
+      <div className="intro-journey-map">
+        <h3 className="intro-journey-title">Your Learning Journey</h3>
+        <div className="intro-journey-steps">
+          {JOURNEY_PHASES.map((p, i) => (
+            <div key={i} className="intro-journey-step">
+              <div className="intro-journey-icon">{p.icon}</div>
+              <div className="intro-journey-info">
+                <div className="intro-journey-label">{p.label}</div>
+                <div className="intro-journey-desc">{p.desc}</div>
+              </div>
+              {i < JOURNEY_PHASES.length - 1 && <div className="intro-journey-arrow">→</div>}
             </div>
           ))}
         </div>
       </div>
 
-      {/* Start Button */}
-      <button className="btn btn-p btn-lg btn-full intro-start-btn" onClick={onStart}>
-        Start Journey! 🚀
+      {/* CTA */}
+      <button className="btn btn-primary btn-lg intro-start-btn" onClick={onStart} id="start-journey-btn">
+        🚀 Begin Your Journey!
       </button>
 
-      {/* Module Info */}
-      <p className="module-info">
-        ~16 min · 100 practice questions · 6 badges to earn
-      </p>
+      {/* Feature cards */}
+      <div className="feature-cards">
+        <div className="feature-card">
+          <div className="feature-card-icon">🎯</div>
+          <div className="feature-card-label">100 Challenges</div>
+        </div>
+        <div className="feature-card">
+          <div className="feature-card-icon">🔺</div>
+          <div className="feature-card-label">Fact Families</div>
+        </div>
+        <div className="feature-card">
+          <div className="feature-card-icon">✨</div>
+          <div className="feature-card-label">Badges & XP</div>
+        </div>
+      </div>
     </div>
   );
 }

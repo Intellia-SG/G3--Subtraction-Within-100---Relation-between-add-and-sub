@@ -1,114 +1,90 @@
-import { useState, useEffect } from 'react';
-import FactFamilyTriangle from '../shared/FactFamilyTriangle.jsx';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
-const STEPS = [
+const WONDER_QUESTIONS = [
   {
-    emoji: '🔍',
-    title: 'A Mystery to Unlock!',
-    body: 'If 48 + 35 = 83… can you find TWO hidden subtraction secrets inside? One addition fact holds the key to two more facts!',
-    curiosity: '🤔',
-    visual: (
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
-        <FactFamilyTriangle whole={83} part1={48} part2={35} missing="part2" size={150} />
-      </div>
-    ),
+    question: "Alex has 83 stickers and gives some to Emma. He has 48 left. How many did he give away?",
+    subtext: "What if knowing an addition fact could instantly solve this subtraction?",
+    emoji: "🏷️",
+    bgEmojis: ["🏷️", "➖", "🔢", "✨"],
   },
   {
-    emoji: '🔑',
-    title: 'The Secret Connection!',
-    body: 'Addition and subtraction UNDO each other — they are inverse operations! Knowing one fact unlocks a whole family of facts.',
-    curiosity: '💡',
-    visual: (
-      <div className="fact-family-box">
-        <div className="fact-family-title">
-          ONE FACT FAMILY:
-        </div>
-        {['48 + 35 = 83 ✓', '35 + 48 = 83 ✓', '83 − 48 = 35 ✓', '83 − 35 = 48 ✓'].map((f, i) => (
-          <div key={f} className={`fact-item ${i > 1 ? 'subtract' : 'add'}`}>
-            {f}
-          </div>
-        ))}
-      </div>
-    ),
+    question: "If 35 + 48 = 83, can you instantly find what 83 − 35 equals — without counting?",
+    subtext: "Addition and subtraction are secret partners — they share the same three numbers!",
+    emoji: "🔗",
+    bgEmojis: ["➕", "➖", "🔗", "💡"],
   },
   {
-    emoji: '🚀',
-    title: "You'll Master This!",
-    body: "After this lesson you'll look at any addition sentence and instantly know two subtraction facts. Let's discover the secret!",
-    curiosity: '⭐',
-    visual: (
-      <div style={{ textAlign: 'center', marginTop: 16 }}>
-        <FactFamilyTriangle whole={83} part1={48} part2={35} size={145} />
-        <div style={{ display: 'flex', gap: 6, justifyContent: 'center', marginTop: 12, flexWrap: 'wrap' }}>
-          {['48+35=83', '35+48=83', '83−48=35', '83−35=48'].map((f) => (
-            <span key={f} className="mini-fact-pill">
-              {f}
-            </span>
-          ))}
-        </div>
-      </div>
-    ),
+    question: "Sam scores 63 points in a game. He loses some points. He now has 27. How many did he lose?",
+    subtext: "There's a triangle trick that unlocks the answer instantly!",
+    emoji: "🎮",
+    bgEmojis: ["🎮", "🔢", "🔺", "✨"],
+  },
+  {
+    question: "How can knowing 27 + 36 = 63 help you solve 63 − 27 without working it out again?",
+    subtext: "Fact families are like magic — one triangle gives you four number sentences!",
+    emoji: "🔺",
+    bgEmojis: ["🔺", "➕", "➖", "🎯"],
   },
 ];
 
 export default function WonderPhase({ onComplete }) {
-  const [step, setStep] = useState(0);
-  const [animReady, setAnimReady] = useState(false);
-  const cur = STEPS[step];
+  const [wonder] = useState(() => WONDER_QUESTIONS[Math.floor(Math.random() * WONDER_QUESTIONS.length)]);
+  const [stage, setStage] = useState(0);
+  const [particles, setParticles] = useState([]);
 
   useEffect(() => {
-    // Trigger animations after component mounts
-    setTimeout(() => setAnimReady(true), 100);
+    const p = Array.from({ length: 20 }, (_, i) => ({
+      id: i,
+      emoji: wonder.bgEmojis[i % wonder.bgEmojis.length],
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      delay: Math.random() * 5,
+      duration: 8 + Math.random() * 12,
+      size: 1.2 + Math.random() * 1.5,
+    }));
+    setParticles(p);
+  }, [wonder]);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setStage(1), 300);
+    const t2 = setTimeout(() => setStage(2), 1200);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
+
+  const handleDiscover = useCallback(() => {
+    setTimeout(() => onComplete(), 300);
+  }, [onComplete]);
 
   return (
     <div className="wonder-phase">
-      <div className="phase-badge badge-wonder">Phase 1 · Wonder 🔍</div>
-
-      {/* Purple gradient question mark icon with glow */}
-      <div className={`wonder-icon-wrapper ${animReady ? 'animate' : ''}`}>
-        <div className="wonder-icon-glow"></div>
-        <div className="wonder-icon">
-          {cur.emoji}
-        </div>
+      <div className="wonder-particles">
+        {particles.map(p => (
+          <span key={p.id} className="wonder-particle" style={{
+            left: `${p.x}%`, top: `${p.y}%`,
+            animationDelay: `${p.delay}s`, animationDuration: `${p.duration}s`,
+            fontSize: `${p.size}rem`,
+          }}>{p.emoji}</span>
+        ))}
       </div>
-
-      {/* Wonder question card */}
-      <div className={`wonder-card glass-card ${animReady ? 'animate' : ''}`}>
-        <div className="wonder-curiosity-emoji">{cur.curiosity}</div>
-        <h2 className="wonder-title">{cur.title}</h2>
-        <p className="wonder-body">
-          {cur.body}
-        </p>
-        <div className="wonder-visual">{cur.visual}</div>
-
-        {/* Step progress dots */}
-        <div className="wonder-progress-dots">
-          {STEPS.map((_, i) => (
-            <div 
-              key={i} 
-              className={`wonder-dot ${i === step ? 'active' : ''} ${i < step ? 'completed' : ''}`}
-            />
-          ))}
+      <div className="wonder-content">
+        <div className={`wonder-qmark ${stage >= 1 ? 'revealed' : ''}`}>
+          <span className="wonder-qmark-icon">?</span>
+          <div className="wonder-qmark-glow" />
         </div>
-      </div>
-
-      {/* Navigation buttons */}
-      <div className="wonder-nav-buttons">
-        {step > 0 && (
-          <button className="btn btn-o wonder-btn-back" onClick={() => setStep((s) => s - 1)}>
-            ← Back
-          </button>
-        )}
-        {step < STEPS.length - 1 ? (
-          <button className="btn btn-purple wonder-btn-next" onClick={() => setStep((s) => s + 1)}>
-            Next →
-          </button>
-        ) : (
-          <button className="btn btn-g btn-lg wonder-btn-complete" onClick={onComplete}>
-            Let's Find Out! 📖
-          </button>
-        )}
+        <div className={`wonder-mascot ${stage >= 1 ? 'visible' : ''}`}>
+          <div className="mascot thinking">🤖</div>
+          <div className="speech-bubble wonder-bubble">Hmm... I wonder... 🤔</div>
+        </div>
+        <div className={`wonder-question-card ${stage >= 1 ? 'visible' : ''}`}>
+          <div className="wonder-emoji">{wonder.emoji}</div>
+          <h2 className="wonder-question-text">{wonder.question}</h2>
+          <p className="wonder-subtext">{wonder.subtext}</p>
+        </div>
+        <button className={`btn btn-wonder ${stage >= 2 ? 'visible' : ''}`} onClick={handleDiscover} id="discover-btn">
+          <span className="wonder-btn-sparkle">✨</span>
+          Let's Discover!
+          <span className="wonder-btn-sparkle">✨</span>
+        </button>
       </div>
     </div>
   );

@@ -3609,3 +3609,90 @@ td {
     page-break-inside: avoid;
   }
 }
+
+/* ── Phase nav: clickable completed steps ── */
+.journey-step.clickable {
+  cursor: pointer;
+}
+.journey-step.clickable:hover .journey-step-dot {
+  background: var(--color-gold-dark, rgba(255,193,7,0.3)) !important;
+  transform: scale(1.15);
+  box-shadow: 0 0 10px rgba(255,193,7,0.5);
+}
+.journey-step.clickable:hover .journey-step-label {
+  color: var(--gold);
+}
+
+/* ── Question card shake (uses animation already defined) ── */
+.glass-card.shake { animation: shake 0.4s ease; }
+
+
+/* ================================================================
+   VIEWPORT FIT — single-screen layout, minimal scrolling
+   ================================================================ */
+
+/* 1. Remove forced 100vh height from every phase — let content
+      determine height; app-container scroll handles overflow         */
+.wonder-phase,
+.story-phase,
+.simulate-phase,
+.play-phase,
+.reflect-phase {
+  min-height: unset !important;
+  padding-top: 58px !important;   /* journey-bar is ~52px tall        */
+  padding-bottom: 20px !important;
+}
+
+/* 2. Wonder phase — tighter gaps, smaller q-mark */
+.wonder-content { gap: 14px !important; }
+.wonder-qmark   { width: 80px !important; height: 80px !important; }
+.wonder-qmark-icon { font-size: 2.8rem !important; }
+.wonder-question-card { padding: 18px 22px !important; }
+.wonder-emoji   { font-size: 2rem !important; margin-bottom: 6px !important; }
+.wonder-question-text { font-size: 1.15rem !important; margin-bottom: 8px !important; }
+.btn-wonder     { padding: 14px 30px !important; font-size: 1rem !important; }
+
+/* 3. Story phase — shorter image, tighter text section */
+.story-phase    { gap: 12px !important; }
+.story-image-section { height: 160px !important; }
+.story-text-section  { padding: 16px 20px !important; }
+.story-title    { font-size: 1rem !important; margin-bottom: 6px !important; }
+.story-text     { font-size: 0.9rem !important; line-height: 1.55 !important; }
+.story-highlight { margin: 10px 0 !important; padding: 8px 14px !important; }
+.story-highlight-text { font-size: 0.95rem !important; }
+.story-mascot   { margin-top: 8px !important; }
+.story-nav      { padding: 0 !important; }
+.story-progress { margin-bottom: 0 !important; }
+
+/* 4. Simulate phase — tighter glass-card, smaller header */
+.simulate-phase { gap: 10px !important; padding-left: 12px !important; padding-right: 12px !important; }
+.simulate-header { margin-bottom: 0 !important; }
+.simulate-label { font-size: 1rem !important; margin-bottom: 2px !important; }
+.simulate-sublabel { font-size: 0.8rem !important; }
+.simulate-phase .glass-card { padding: 18px 18px !important; }
+
+/* 5. Play phase — tighter world header + question card */
+.play-phase { padding-top: 58px !important; gap: 10px !important;
+              padding-left: 12px !important; padding-right: 12px !important; }
+.play-phase .glass-card { padding: 16px 18px !important; }
+
+/* 6. Reflect phase */
+.reflect-phase { padding-left: 12px !important; padding-right: 12px !important; }
+
+/* 7. Story card — allow it to scroll internally on very small screens */
+.story-card { max-height: calc(100dvh - 180px); overflow-y: auto; }
+
+/* 8. Glass-card inside simulate / play — cap height with inner scroll */
+.simulate-phase .glass-card {
+  max-height: calc(100dvh - 160px);
+  overflow-y: auto;
+}
+
+/* ── Story progress bar: clear journey-bar overlap ── */
+.story-phase {
+  padding-top: 72px !important;   /* journey-bar ~52px + 20px breathing room */
+}
+.story-progress {
+  margin-top: 4px;
+  margin-bottom: 6px;
+}

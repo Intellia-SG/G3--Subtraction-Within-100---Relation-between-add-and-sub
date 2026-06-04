@@ -89,7 +89,7 @@ export default function App() {
           <SimulatePhase
             state={state}
             dispatch={dispatch}
-            onDone={() => dispatch({ t: 'PHASE', v: 'play' })}
+            onDone={() => advance('simulate', 'play')}
             audioEnabled={soundEnabled}
           />
         );
@@ -147,7 +147,7 @@ export default function App() {
         )}
 
         {/* Journey progress bar */}
-        {showNav && <TopBar state={state} />}
+        {showNav && <TopBar state={state} dispatch={dispatch} />}
 
         {/* Main content */}
         <main id="main-content" style={{ width: '100%', maxWidth: 700, padding: '0 16px' }}>

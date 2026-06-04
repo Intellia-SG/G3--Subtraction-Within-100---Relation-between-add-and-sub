@@ -1,73 +1,55 @@
-import Base10Station      from './Base10Station.jsx';
-import FactFamilyStation  from './FactFamilyStation.jsx';
-import InverterStation    from './InverterStation.jsx';
+import { useState, useCallback } from 'react';
+import Base10Station     from './Base10Station.jsx';
+import FactFamilyStation from './FactFamilyStation.jsx';
+import InverterStation   from './InverterStation.jsx';
 
-const TABS = [
-  { label: 'Base-10 Blocks',   icon: '🧱', shortLabel: 'Blocks' },
-  { label: 'Fact Triangle', icon: '🔺', shortLabel: 'Triangle' },
-  { label: 'Number Inverter', icon: '🔄', shortLabel: 'Inverter' },
+// Three stations matching CPA progression per PRD §5.3
+const STATIONS = [
+  { icon: '🧱', title: 'Take-Away Blocks',   subtitle: 'Concrete — drag tens & ones to the basket' },
+  { icon: '🔺', title: 'Fact Triangle',       subtitle: 'Pictorial — find the missing number' },
+  { icon: '🔄', title: 'Number Inverter',     subtitle: 'Abstract — use addition to solve subtraction' },
 ];
 
 export default function SimulatePhase({ state, dispatch, onDone }) {
-  const { ssc, simSt } = state;
+  const [station, setStation] = useState(0);
 
-  const handleComplete = (idx) => {
-    dispatch({ t: 'SIM_COMPLETE', v: idx });
-    if (idx === 2) {
-      dispatch({ t: 'PHASE_DONE', v: 'simulate' });
-      onDone();
-    }
-  };
+  const nextStation = useCallback(() => {
+    setStation(s => s + 1);
+  }, []);
 
   return (
     <div className="simulate-phase">
-      <div className="phase-badge badge-simulate">Phase 3 · Simulate 🔬</div>
-
-      {/* Header */}
       <div className="simulate-header">
-        <h2 className="simulate-title">Explore Subtraction Models</h2>
-        <p className="simulate-subtitle">Complete all 3 stations to understand inverse operations</p>
+        <h3 className="simulate-label">🧪 Simulate</h3>
+        <p className="simulate-sublabel">Explore the inverse relationship — three stations to master!</p>
       </div>
 
       {/* Station progress dots */}
-      <div className="station-progress">
-        {TABS.map((tab, i) => (
-          <div 
-            key={i} 
-            className={`station-dot ${ssc[i] ? 'completed' : ''} ${simSt === i ? 'active' : ''}`}
-          >
-            <div className="station-dot-inner">
-              {ssc[i] ? '✓' : i + 1}
-            </div>
-            <span className="station-label">{tab.shortLabel}</span>
+      <div className="progress-dots">
+        {STATIONS.map((s, i) => (
+          <div key={i} className="simulate-dot-wrapper">
+            <div className={`progress-dot ${i === station ? 'active' : i < station ? 'completed' : ''}`} />
+            <span className="simulate-dot-label">{s.icon}</span>
           </div>
         ))}
       </div>
 
-      {/* Tip box */}
-      <div className="simulate-tip-box">
-        <span className="tip-icon">💡</span>
-        <span className="tip-text">
-          {simSt === 0 && 'Remove blocks to see subtraction in action'}
-          {simSt === 1 && 'Drag the missing number to complete the triangle'}
-          {simSt === 2 && 'Use the number pad to find the inverse operation'}
+      {/* Station description bar */}
+      <div style={{
+        textAlign: 'center', padding: '5px 12px',
+        background: 'rgba(255,255,255,0.04)', borderRadius: 10,
+        marginBottom: 0, maxWidth: 640, width: '100%',
+      }}>
+        <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+          {STATIONS[station]?.icon} {STATIONS[station]?.subtitle}
         </span>
       </div>
 
-      {/* Station content card */}
-      <div className="glass-card simulate-station-card">
-        {simSt === 0 && !ssc[0] && <Base10Station     onComplete={() => handleComplete(0)} />}
-        {simSt === 1 && !ssc[1] && <FactFamilyStation onComplete={() => handleComplete(1)} />}
-        {simSt === 2 && !ssc[2] && <InverterStation   onComplete={() => handleComplete(2)} />}
-
-        {/* Station complete message */}
-        {ssc[simSt] && simSt < 3 && (
-          <div className="station-complete-message">
-            <div className="complete-icon">✅</div>
-            <h2 className="complete-title">Station {simSt + 1} Complete!</h2>
-            <p className="complete-subtitle">Moving to next station…</p>
-          </div>
-        )}
+      {/* Station card */}
+      <div className="glass-card" style={{ maxWidth: 640, width: '100%', animation: 'slideUp 0.35s ease' }}>
+        {station === 0 && <Base10Station     onComplete={nextStation} />}
+        {station === 1 && <FactFamilyStation onComplete={nextStation} />}
+        {station === 2 && <InverterStation   onComplete={onDone}     />}
       </div>
     </div>
   );

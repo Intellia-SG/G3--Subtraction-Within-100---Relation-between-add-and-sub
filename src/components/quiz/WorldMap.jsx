@@ -1,4 +1,4 @@
-import { WORLDS } from '../../data/worlds.js';
+import { WORLDS }    from '../../data/worlds.js';
 import { calcStars } from '../../utils/gamification.js';
 
 export default function WorldMap({ state, dispatch }) {
@@ -6,52 +6,68 @@ export default function WorldMap({ state, dispatch }) {
   const totalCorrect = ws.reduce((t, w) => t + (w ?? 0), 0);
 
   return (
-    <div>
-      <div className="pbadge pb-play">Phase 4 · Play 🎮</div>
-
+    <div className="play-phase" style={{ alignItems: 'center' }}>
       {/* Header */}
-      <div className="card card-blue" style={{ textAlign: 'center', marginBottom: 12 }}>
-        <div style={{ fontSize: 32, marginBottom: 6 }}>🗺️</div>
-        <h2 style={{ color: '#fff', marginBottom: 4 }}>World Map</h2>
-        <p style={{ opacity: 0.8, fontSize: 13 }}>Score ≥ 5/10 to unlock the next world!</p>
-        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginTop: 10 }}>
-          {[[`⭐ ${stars}`, 'Stars'], [`⚡ ${xp}`, 'XP'], [`${totalCorrect}/100`, 'Correct']].map(([v, l]) => (
-            <div key={l} style={{ background: 'rgba(255,255,255,.15)', borderRadius: 9, padding: '4px 12px' }}>
-              <div style={{ fontWeight: 800, fontSize: 14 }}>{v}</div>
-              <div style={{ fontSize: 10, opacity: 0.7 }}>{l}</div>
+      <div className="glass-card" style={{ width: '100%', textAlign: 'center', padding: '20px 24px 16px' }}>
+        <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700, color: '#fff', marginBottom: 4 }}>
+          🗺️ World Map
+        </div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: 14 }}>
+          Score 5 or more out of 10 to unlock the next world!
+        </div>
+        <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+          {[['⭐ ' + stars, 'Stars'], ['⚡ ' + xp, 'XP'], [totalCorrect + '/100', 'Correct']].map(([v, l]) => (
+            <div key={l} style={{
+              background: 'rgba(255,255,255,0.08)', borderRadius: 10, padding: '8px 16px', textAlign: 'center', minWidth: 72
+            }}>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontWeight: 800, color: 'var(--gold)' }}>{v}</div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: 2 }}>{l}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* World grid */}
-      <div className="worlds-grid">
+      {/* World cards */}
+      <div className="world-map" style={{ maxWidth: 640, width: '100%' }}>
         {WORLDS.map((w, i) => {
           const score    = ws[i];
           const st       = score !== null ? calcStars(score) : 0;
           const unlocked = i === 0 || (ws[i - 1] !== null && ws[i - 1] >= 5);
           const complete = score !== null;
+          const current  = i === cw && !complete;
 
           return (
             <div
               key={i}
-              className={`w-card${!unlocked ? ' locked' : complete ? ' complete' : i === cw && !complete ? ' current' : ''}`}
+              className={`world-card ${!unlocked ? 'locked' : complete ? 'completed unlocked' : 'unlocked'}`}
+              style={{
+                borderColor: current ? 'var(--purple)' : complete ? 'var(--color-green)' : undefined,
+                boxShadow: current ? '0 0 20px rgba(124,58,237,0.3)' : undefined,
+              }}
               onClick={() => unlocked && dispatch({ t: 'ENTER_WORLD', v: i })}
               role={unlocked ? 'button' : undefined}
               tabIndex={unlocked ? 0 : undefined}
-              onKeyDown={(e) => e.key === 'Enter' && unlocked && dispatch({ t: 'ENTER_WORLD', v: i })}
-              aria-label={`${w.name}${complete ? `, score ${score}/10` : unlocked ? ', available' : ', locked'}`}
+              onKeyDown={e => e.key === 'Enter' && unlocked && dispatch({ t: 'ENTER_WORLD', v: i })}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <span style={{ fontSize: 20 }}>{w.emoji}</span>
-                {!unlocked && <span style={{ fontSize: 14 }}>🔒</span>}
-                {complete  && <span className="w-score">{score}/10</span>}
-              </div>
-              <div className="w-name">W{i + 1}: {w.name}</div>
-              <div className="w-range">{w.range}</div>
-              {complete
-                ? <div className="w-stars-row">{'⭐'.repeat(st)}{'☆'.repeat(3 - st)}</div>
-                : unlocked && <div style={{ fontSize: 10, fontWeight: 800, color: '#1A5EAB', marginTop: 3 }}>▶ Play Now</div>}
+              {/* Lock icon */}
+              {!unlocked && <div className="world-lock">🔒</div>}
+              {complete   && <div className="world-lock" style={{ color: 'var(--green)' }}>{score}/10</div>}
+
+              <div className="world-icon">{w.emoji}</div>
+              <div className="world-name">World {i + 1}: {w.name}</div>
+              <div className="world-desc">{w.range}</div>
+
+              {complete ? (
+                <div className="world-stars">
+                  {'⭐'.repeat(st)}{'☆'.repeat(3 - st)}
+                </div>
+              ) : unlocked ? (
+                <div className="world-play-btn" style={{ background: 'var(--purple)', borderRadius: 999, marginTop: 4 }}>
+                  ▶ Play Now!
+                </div>
+              ) : (
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 4 }}>Unlock first!</div>
+              )}
             </div>
           );
         })}

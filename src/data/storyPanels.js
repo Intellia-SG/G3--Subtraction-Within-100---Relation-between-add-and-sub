@@ -1,50 +1,30 @@
-// Story panels for Phase 2 — The Magic Sandwich Shop
-// Each panel: { img, nar, dlg, vis }
-// `img` is the placeholder label shown in the <ImgPH> component.
-// Replace with real <img src="…"> paths once assets are provided.
-// `vis` is a JSX element key (resolved in StoryPhase.jsx).
-
-export const PANELS = [
+export const STORY_SLIDES = [
   {
-    img: "story/panel-01.jpg",
-    imgAlt: "Bright colourful sandwich shop exterior — Lily and Max standing outside smiling proudly",
-    nar: "Lily and Max run a sandwich shop. One morning, they baked 63 sandwiches.",
-    dlg: null,
-    visKey: null,
+    image: '/courses/grade-2-math/images/story_problem.png',
+    title: "Alex's Fair Day",
+    text: "Alex won 63 tokens at the school fair. He spent some tokens on rides and games. When he counted at the end of the day, he had only 27 tokens left. His friend Emma asked him a question...",
+    highlight: '"How many tokens did you spend, Alex?"',
+    mascotText: "Let's help Alex figure it out! 🎡",
   },
   {
-    img: "story/panel-02.jpg",
-    imgAlt: "Lily counting sandwiches neatly arranged on a display shelf",
-    nar: "They sold some sandwiches by noon. Now only 27 sandwiches are left on the shelf.",
-    dlg: null,
-    visKey: null,
+    image: '/courses/grade-2-math/images/story_combining.png',
+    title: 'The Subtraction Puzzle!',
+    text: 'Alex tried to count backwards from 63 to 27, but kept losing track. Then Emma smiled and said: "You already know the answer — you just need to find it using addition!"',
+    highlight: '"Use addition to unlock subtraction!"',
+    mascotText: 'Addition and subtraction are partners! 🔗',
   },
   {
-    img: "story/panel-03.jpg",
-    imgAlt: "Max looking puzzled at a notepad covered in question marks",
-    nar: "Max scratched his head.",
-    dlg: "How many sandwiches did we sell? I can't figure it out!",
-    visKey: null,
+    image: '/courses/grade-2-math/images/story_barmodel.png',
+    title: "Emma's Secret Triangle",
+    text: 'Emma drew a triangle. At the top she wrote 63 — the whole. At the bottom two corners she wrote 27 and a question mark. "The two parts always add up to the whole!" she explained. "So 27 + ? = 63, which means 63 − 27 = 36!"',
+    highlight: '"The Fact Family Triangle unlocks everything!"',
+    mascotText: 'One triangle, four facts! 🔺',
   },
   {
-    img: "story/panel-04.jpg",
-    imgAlt: "Lily drawing a fact family triangle on paper — 63 at top, 27 at bottom-left, ? at bottom-right",
-    nar: "Then Lily had an idea! She drew a fact family triangle.",
-    dlg: "If 27 + ? = 63… then the triangle will tell us the answer!",
-    visKey: "triangle-missing",  // FactFamilyTriangle with missing="part2"
-  },
-  {
-    img: "story/panel-05.jpg",
-    imgAlt: "Max and Lily high-fiving — fact family triangle diagram visible on paper behind them",
-    nar: "63 − 27 = 36. They sold 36 sandwiches! Max was amazed.",
-    dlg: "One addition fact revealed the answer instantly! The inverse works! 🎉",
-    visKey: "triangle-complete", // Full FactFamilyTriangle
-  },
-  {
-    img: "story/panel-06.jpg",
-    imgAlt: "Chalkboard showing the complete fact family in four chalk lines",
-    nar: "Together they wrote the whole fact family on the chalkboard for everyone to see!",
-    dlg: "27+36=63  |  36+27=63  |  63−27=36  |  63−36=27",
-    visKey: null,
+    image: '/courses/grade-2-math/images/story_numberline.png',
+    title: 'The Full Fact Family!',
+    text: 'Alex was amazed. From just three numbers — 63, 27, and 36 — he could write four facts: 27+36=63, 36+27=63, 63−27=36, and 63−36=27. "They are a family!" he said. Now subtraction never seemed hard again.',
+    highlight: '"One fact family — four number sentences!"',
+    mascotText: "Your turn to be the expert! 🚀",
   },
 ];
