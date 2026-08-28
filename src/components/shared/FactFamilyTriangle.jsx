@@ -1,48 +1,97 @@
-export default function FactFamilyTriangle({ whole, part1, part2, missing = null, size = 160 }) {
-  const h = Math.round((size * 200) / 220);
+// src/components/shared/FactFamilyTriangle.jsx
+import React from 'react';
 
-  const nodeStyle = (slot) => ({
-    fill:              missing === slot ? '#FEF9E7' : slot === 'whole' ? '#1A5EAB' : slot === 'part1' ? '#F5A623' : '#27AE60',
-    stroke:            missing === slot ? '#F5A623' : slot === 'whole' ? '#0D3B6E' : slot === 'part1' ? '#C17B05' : '#1A7A40',
-    strokeWidth:       3,
-    strokeDasharray:   missing === slot ? '7,3' : '0',
-  });
+export default function FactFamilyTriangle({ whole, part1, part2, missing = null, size = 180 }) {
+  const h = Math.round((size * 190) / 220);
 
-  const textStyle = (slot) => ({
-    fill:       missing === slot ? '#85929E' : slot === 'part1' ? '#0D3B6E' : '#fff',
-    fontSize:   slot === 'whole' ? 17 : 15,
-    fontWeight: 'bold',
-  });
+  const nodeFill = (slot) => {
+    if (missing === slot) return 'rgba(255, 213, 79, 0.15)';
+    if (slot === 'whole') return 'rgba(251, 176, 59, 0.25)';
+    if (slot === 'part1') return 'rgba(56, 189, 248, 0.25)';
+    return 'rgba(74, 222, 128, 0.25)';
+  };
 
-  const label = (slot) => (missing === slot ? '?' : slot === 'whole' ? whole : slot === 'part1' ? part1 : part2);
+  const nodeStroke = (slot) => {
+    if (missing === slot) return '#ffd54f';
+    if (slot === 'whole') return '#f59e0b';
+    if (slot === 'part1') return '#38bdf8';
+    return '#4ade80';
+  };
+
+  const textFill = (slot) => {
+    if (missing === slot) return '#ffd54f';
+    return '#ffffff';
+  };
+
+  const label = (slot) => {
+    if (missing === slot) return '?';
+    if (slot === 'whole') return whole;
+    if (slot === 'part1') return part1;
+    return part2;
+  };
 
   return (
-    <svg viewBox="0 0 220 200" width={size} height={h} aria-label="Fact family triangle">
-      {/* Edges */}
-      <line x1="83"  y1="58"  x2="52"  y2="112" stroke="#AED6F1" strokeWidth="2.5" />
-      <line x1="137" y1="58"  x2="168" y2="112" stroke="#AED6F1" strokeWidth="2.5" />
-      <line x1="68"  y1="157" x2="152" y2="157" stroke="#AED6F1" strokeWidth="2.5" />
+    <svg viewBox="0 0 220 200" width={size} height={h} aria-label="Fact family triangle" style={{ filter: 'drop-shadow(0 6px 14px rgba(0,0,0,0.4))' }}>
+      {/* Triangle connection lines */}
+      <polygon
+        points="110,36 44,142 176,142"
+        fill="rgba(255, 255, 255, 0.03)"
+        stroke="rgba(255, 255, 255, 0.2)"
+        strokeWidth="3"
+        strokeLinejoin="round"
+      />
 
-      {/* Minus signs */}
-      <text x="52"  y="96"  fill="#85929E" fontSize="14" textAnchor="middle">−</text>
-      <text x="168" y="96"  fill="#85929E" fontSize="14" textAnchor="middle">−</text>
+      {/* Operator hints */}
+      <text x="70" y="90" fill="rgba(255, 255, 255, 0.45)" fontSize="16" fontWeight="bold" textAnchor="middle">−</text>
+      <text x="150" y="90" fill="rgba(255, 255, 255, 0.45)" fontSize="16" fontWeight="bold" textAnchor="middle">−</text>
+      <text x="110" y="152" fill="rgba(255, 255, 255, 0.45)" fontSize="16" fontWeight="bold" textAnchor="middle">+</text>
 
-      {/* Fact label */}
-      <text x="110" y="190" fill="#1A5EAB" fontSize="11" textAnchor="middle">
-        {part1}+{part2}={whole}
+      {/* Whole (Top) */}
+      <circle
+        cx="110"
+        cy="36"
+        r="28"
+        fill={nodeFill('whole')}
+        stroke={nodeStroke('whole')}
+        strokeWidth="3"
+        strokeDasharray={missing === 'whole' ? '6,4' : '0'}
+      />
+      <text x="110" y="43" textAnchor="middle" fill={textFill('whole')} fontSize="17" fontWeight="900" fontFamily="var(--font-display)">
+        {label('whole')}
       </text>
 
-      {/* Whole (top) */}
-      <circle cx="110" cy="33" r="28" {...nodeStyle('whole')} />
-      <text x="110" y="39" textAnchor="middle" {...textStyle('whole')}>{label('whole')}</text>
+      {/* Part 1 (Bottom-left) */}
+      <circle
+        cx="44"
+        cy="142"
+        r="27"
+        fill={nodeFill('part1')}
+        stroke={nodeStroke('part1')}
+        strokeWidth="3"
+        strokeDasharray={missing === 'part1' ? '6,4' : '0'}
+      />
+      <text x="44" y="149" textAnchor="middle" fill={textFill('part1')} fontSize="16" fontWeight="900" fontFamily="var(--font-display)">
+        {label('part1')}
+      </text>
 
-      {/* Part 1 (bottom-left) */}
-      <circle cx="42" cy="133" r="27" {...nodeStyle('part1')} />
-      <text x="42" y="139" textAnchor="middle" {...textStyle('part1')}>{label('part1')}</text>
+      {/* Part 2 (Bottom-right) */}
+      <circle
+        cx="176"
+        cy="142"
+        r="27"
+        fill={nodeFill('part2')}
+        stroke={nodeStroke('part2')}
+        strokeWidth="3"
+        strokeDasharray={missing === 'part2' ? '6,4' : '0'}
+      />
+      <text x="176" y="149" textAnchor="middle" fill={textFill('part2')} fontSize="16" fontWeight="900" fontFamily="var(--font-display)">
+        {label('part2')}
+      </text>
 
-      {/* Part 2 (bottom-right) */}
-      <circle cx="178" cy="133" r="27" {...nodeStyle('part2')} />
-      <text x="178" y="139" textAnchor="middle" {...textStyle('part2')}>{label('part2')}</text>
+      {/* Bottom fact label */}
+      <text x="110" y="188" fill="rgba(255, 255, 255, 0.75)" fontSize="12" fontWeight="800" textAnchor="middle" fontFamily="var(--font-display)">
+        {part1} + {part2} = {whole}
+      </text>
     </svg>
   );
 }

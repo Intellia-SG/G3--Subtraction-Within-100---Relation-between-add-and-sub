@@ -1,145 +1,183 @@
-/**
- * generate_audio.js
- * Generates all narration + SFX audio files via ElevenLabs API.
- *
- * Usage:
- *   VITE_ELEVENLABS_API_KEY=your_key node scripts/generate_audio.js
- *
- * Voice: Alice | ID: Xb7hH8MSUJpSbSDYk0k2 | Model: eleven_multilingual_v2
- * Output: public/assets/audio/
- */
+// scripts/generate_audio.js
+// Offline pre-generation script for ElevenLabs narration audio files.
+// Strictly follows audio_generation_pipeline (5).md specifications.
 
-import fs   from 'fs';
+import fs from 'fs';
 import path from 'path';
-import https from 'https';
-import { fileURLToPath } from 'url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const OUT_DIR   = path.join(__dirname, '..', 'public', 'assets', 'audio');
-
-const API_KEY  = process.env.VITE_ELEVENLABS_API_KEY;
-const VOICE_ID = 'Xb7hH8MSUJpSbSDYk0k2'; // Alice
-const MODEL    = 'eleven_multilingual_v2';
-
-if (!API_KEY) {
-  console.error('❌  VITE_ELEVENLABS_API_KEY not set. Aborting.');
-  process.exit(1);
+// Helper to read environment variables without external dependencies
+function loadEnv() {
+  const envFiles = ['.env.local', '.env'];
+  for (const file of envFiles) {
+    if (fs.existsSync(file)) {
+      const content = fs.readFileSync(file, 'utf-8');
+      for (const line of content.split('\n')) {
+        const trimmed = line.trim();
+        if (trimmed && !trimmed.startsWith('#') && trimmed.includes('=')) {
+          const [key, ...rest] = trimmed.split('=');
+          const val = rest.join('=').replace(/^["']|["']$/g, '').trim();
+          if (!process.env[key.trim()]) {
+            process.env[key.trim()] = val;
+          }
+        }
+      }
+    }
+  }
 }
 
-fs.mkdirSync(OUT_DIR, { recursive: true });
+loadEnv();
 
-// ── Text scripts ──────────────────────────────────────────────
-const SCRIPTS = [
-  { file: 'intro_welcome.mp3',        text: 'Welcome to Subtraction within 100! Let\'s discover the secret connection between addition and subtraction.' },
-  { file: 'wonder_01.mp3',            text: 'Here\'s a mystery! If 48 plus 35 equals 83, can you find two hidden subtraction secrets inside?' },
-  { file: 'wonder_02.mp3',            text: 'Addition and subtraction undo each other. They are called inverse operations, like a lock and its key!' },
-  { file: 'wonder_03.mp3',            text: 'Knowing one addition fact gives you two subtraction facts instantly! Let\'s discover how.' },
-  { file: 'story_intro.mp3',          text: 'Meet Lily and Max. They run a sandwich shop and have a very tricky maths problem to solve!' },
-  { file: 'story_panel1.mp3',         text: 'Lily and Max baked 63 sandwiches one morning.' },
-  { file: 'story_panel2.mp3',         text: 'By noon, only 27 sandwiches were left on the shelf.' },
-  { file: 'story_panel3.mp3',         text: 'Max scratched his head. How many sandwiches did we sell? I can\'t figure it out!' },
-  { file: 'story_panel4.mp3',         text: 'Lily had an idea! She drew a fact family triangle with 63 at the top, 27 on one side, and a question mark on the other.' },
-  { file: 'story_panel5.mp3',         text: '63 minus 27 equals 36. They sold 36 sandwiches! One addition fact revealed the answer instantly!' },
-  { file: 'story_panel6.mp3',         text: 'They wrote all four facts on the chalkboard: 27 plus 36 equals 63, 36 plus 27 equals 63, 63 minus 27 equals 36, and 63 minus 36 equals 27!' },
-  { file: 'sim_a_intro.mp3',          text: 'Station A! Let\'s use base-ten blocks to take away and see subtraction in action.' },
-  { file: 'sim_b_intro.mp3',          text: 'Station B! Use the fact family triangle to find the missing number.' },
-  { file: 'sim_c_intro.mp3',          text: 'Station C! Can you write the subtraction sentence that matches the addition sentence?' },
-  { file: 'feedback_correct_01.mp3',  text: 'Brilliant! You\'ve got it!' },
-  { file: 'feedback_correct_02.mp3',  text: 'Excellent work! The inverse relationship helped you!' },
-  { file: 'feedback_correct_03.mp3',  text: 'Outstanding! You\'re a subtraction superstar!' },
-  { file: 'feedback_wrong_01.mp3',    text: 'Good try! Remember to use the fact family triangle.' },
-  { file: 'feedback_wrong_02.mp3',    text: 'Not quite! Think about the inverse relationship.' },
-  { file: 'badge_curious_coder.mp3',  text: 'Badge unlocked! Curious Coder! You completed the Wonder and Story phases!' },
-  { file: 'badge_sim_scientist.mp3',  text: 'Badge unlocked! Sim Scientist! You completed all three simulation stations!' },
-  { file: 'badge_sub_solver.mp3',     text: 'Badge unlocked! Sub Solver! You scored over 80 correct answers!' },
-  { file: 'badge_inv_master.mp3',     text: 'Badge unlocked! Inverse Master! You scored perfect ten out of ten in a world!' },
-  { file: 'badge_streak_champ.mp3',   text: 'Badge unlocked! Streak Champion! You answered 12 questions in a row correctly!' },
-  { file: 'badge_journey_hero.mp3',   text: 'Badge unlocked! Journey Hero! You completed all five phases. What an achievement!' },
-  { file: 'world_complete.mp3',       text: 'Wonderful! You completed this world! Keep going to unlock the next challenge!' },
-  { file: 'all_worlds_done.mp3',      text: 'Amazing! You\'ve completed all ten worlds! You are a true Subtraction Master!' },
-  { file: 'reflect_intro.mp3',        text: 'Let\'s take a moment to think about everything you\'ve learned today.' },
-  { file: 'results_final.mp3',        text: 'Congratulations! You\'ve completed the Subtraction within 100 module. What a fantastic journey!' },
+const apiKey = process.env.VITE_ELEVENLABS_API_KEY || process.env.ELEVENLABS_API_KEY;
+if (!apiKey) {
+  console.log("ℹ️ Note: VITE_ELEVENLABS_API_KEY is not defined yet in .env.local.");
+  console.log("Audio files can be generated whenever you add VITE_ELEVENLABS_API_KEY=your_key to .env.local.");
+}
+
+const VOICE_ID = 'Xb7hH8MSUJpSbSDYk0k2'; // Alice — Clear, Engaging Educator
+const VOICE_MODEL = 'eleven_multilingual_v2';
+
+const VOICE_SETTINGS = {
+  statement:     { stability: 0.65, similarity_boost: 0.80, style: 0.30, use_speaker_boost: true },
+  instruction:   { stability: 0.65, similarity_boost: 0.80, style: 0.30, use_speaker_boost: true },
+  question:      { stability: 0.55, similarity_boost: 0.75, style: 0.50, use_speaker_boost: true },
+  encouragement: { stability: 0.50, similarity_boost: 0.85, style: 0.60, use_speaker_boost: true },
+  emphasis:      { stability: 0.75, similarity_boost: 0.90, style: 0.20, use_speaker_boost: true },
+  thinking:      { stability: 0.70, similarity_boost: 0.78, style: 0.40, use_speaker_boost: true },
+  celebration:   { stability: 0.45, similarity_boost: 0.85, style: 0.80, use_speaker_boost: true },
+};
+
+const phrases = [
+  // ─── INTRO ────────────────────────────────────────────────────────────────
+  { text: "Welcome to Addition and Subtraction Quest! Let's discover how addition unlocks subtraction!", style: 'celebration' },
+
+  // ─── WONDER PHASE ────────────────────────────────────────────────────────
+  { text: "Alex won sixty-three tokens at the school carnival. He played fun games and had twenty-seven tokens left.", style: 'statement' },
+  { text: "How many tokens did he spend, and how can addition help us solve this subtraction puzzle without counting backwards?", style: 'question' },
+  { text: "Let's investigate the power of Fact Families and inverse operations!", style: 'celebration' },
+
+  // ─── STORY PHASE: PANEL 1 ────────────────────────────────────────────────
+  { text: "Alex had the best time at the school carnival, winning sixty-three shiny prize tokens!", style: 'statement' },
+  { text: "He spent some tokens on the giant slide and carnival games.", style: 'statement' },
+  { text: "When he checked his pocket, he had twenty-seven tokens left.", style: 'statement' },
+  { text: "His friend Emma asked: How many tokens did you spend, Alex?", style: 'question' },
+  { text: "Alex wondered how to find the missing part!", style: 'thinking' },
+
+  // ─── STORY PHASE: PANEL 2 ────────────────────────────────────────────────
+  { text: "Alex tried to count backwards one by one from sixty-three down to twenty-seven, but he kept losing track.", style: 'statement' },
+  { text: "Emma smiled and said: You don't need to count backwards! You can use addition to unlock subtraction!", style: 'encouragement' },
+  { text: "Addition and subtraction are partners that work together.", style: 'statement' },
+  { text: "Twenty-seven plus what number equals sixty-three? Emma asked.", style: 'question' },
+  { text: "Alex's eyes lit up with curiosity!", style: 'celebration' },
+
+  // ─── STORY PHASE: PANEL 3 ────────────────────────────────────────────────
+  { text: "Emma drew a magical Fact Family Triangle.", style: 'statement' },
+  { text: "At the top she wrote sixty-three — the whole total.", style: 'statement' },
+  { text: "At the bottom corners, she wrote twenty-seven and thirty-six.", style: 'statement' },
+  { text: "The two bottom parts always add up to the top whole! she explained.", style: 'statement' },
+  { text: "So twenty-seven plus thirty-six equals sixty-three, which means sixty-three minus twenty-seven equals thirty-six!", style: 'celebration' },
+
+  // ─── STORY PHASE: PANEL 4 ────────────────────────────────────────────────
+  { text: "Alex was amazed! From just three numbers — sixty-three, twenty-seven, and thirty-six — he could write four complete facts.", style: 'statement' },
+  { text: "Twenty-seven plus thirty-six is sixty-three. Thirty-six plus twenty-seven is sixty-three.", style: 'statement' },
+  { text: "Sixty-three minus twenty-seven is thirty-six. And sixty-three minus thirty-six is twenty-seven.", style: 'statement' },
+  { text: "They are a true fact family! Subtraction is simple when you know addition!", style: 'celebration' },
+
+  // ─── SIMULATE STATION INTROS ─────────────────────────────────────────────
+  { text: "Welcome to Station A — Apple Orchard and Basket Lab!", style: 'instruction' },
+  { text: "Tap apples to place them into Basket A and Basket B to build the target whole. Then take away one basket to discover the inverse subtraction fact!", style: 'instruction' },
+  { text: "Welcome to Station B — Fact Family Balance Scale and Triangle!", style: 'instruction' },
+  { text: "Place the missing part weight onto the scale to level it with the whole. Once balanced, tap the number cards to reveal all four fact sentences!", style: 'instruction' },
+  { text: "Welcome to Station C — The Math Inverse Machine!", style: 'instruction' },
+  { text: "Feed an addition fact into the machine gears, pull the lever, and build the twin inverse subtraction facts with the dynamic bar model!", style: 'instruction' },
+  { text: "Welcome to Station D — Fact Detective and Error Buster!", style: 'instruction' },
+  { text: "Detective Pip found suspicious math scrolls with calculation mistakes. Inspect the clues, find the broken fact sentence, and fix it!", style: 'instruction' },
+
+  // ─── FEEDBACK & HINTS ────────────────────────────────────────────────────
+  { text: "Spot on! That's correct! 🎉", style: 'celebration' },
+  { text: "Awesome! Three in a row! ⭐", style: 'celebration' },
+  { text: "Incredible streak! You are unstoppable! 🔥", style: 'celebration' },
+  { text: "Not quite — check the hint, think of the fact family triangle, and try again! 💡", style: 'thinking' },
+  { text: "Here's your first hint! Remember that Part One plus Part Two equals the Whole.", style: 'encouragement' },
+  { text: "Here's your final clue! Subtract the known part from the whole to find the missing part.", style: 'encouragement' },
+
+  // ─── DISTRICT & BOSS BATTLES ─────────────────────────────────────────────
+  { text: "World Complete! Spectacular job mastering this math world! 🌟", style: 'celebration' },
+  { text: "The Boss Battle begins! Answer correctly to defeat the boss and claim your badge!", style: 'emphasis' },
+  { text: "Victory! You defeated the boss and claimed the World Badge! 👑", style: 'celebration' },
+
+  // ─── REFLECT PHASE ───────────────────────────────────────────────────────
+  { text: "Welcome to the Reflect Phase! Let's review the key fact family rules and check your scorecard! 📓", style: 'statement' },
+  { text: "Outstanding! You have mastered the relationship between addition and subtraction! You are a Grand Math Master! 🏆", style: 'celebration' },
 ];
 
-// ── TTS helper ────────────────────────────────────────────────
-function tts(text, outPath) {
-  return new Promise((resolve, reject) => {
-    const body = JSON.stringify({
-      text,
-      model_id:      MODEL,
-      voice_settings: { stability: 0.5, similarity_boost: 0.75 },
-    });
-
-    const req = https.request(
-      {
-        hostname: 'api.elevenlabs.io',
-        path:     `/v1/text-to-speech/${VOICE_ID}`,
-        method:   'POST',
-        headers:  {
-          'xi-api-key':    API_KEY,
-          'Content-Type':  'application/json',
-          'Accept':        'audio/mpeg',
-          'Content-Length': Buffer.byteLength(body),
-        },
-      },
-      (res) => {
-        if (res.statusCode !== 200) {
-          let err = '';
-          res.on('data', (d) => (err += d));
-          res.on('end', () => reject(new Error(`HTTP ${res.statusCode}: ${err}`)));
-          return;
-        }
-        const chunks = [];
-        res.on('data', (d) => chunks.push(d));
-        res.on('end', () => {
-          fs.writeFileSync(outPath, Buffer.concat(chunks));
-          resolve();
-        });
-      }
-    );
-
-    req.on('error', reject);
-    req.write(body);
-    req.end();
-  });
+const outputDir = './public/assets/audio';
+if (!fs.existsSync(outputDir)) {
+  fs.mkdirSync(outputDir, { recursive: true });
 }
 
-// ── Main ──────────────────────────────────────────────────────
-(async () => {
-  console.log(`🎙️  Generating ${SCRIPTS.length} audio files…\n`);
-  let ok = 0, skip = 0, fail = 0;
+function cleanString(str) {
+  return str.toLowerCase().replace(/[^a-z0-9]/g, '_').substring(0, 45).replace(/_+/g, '_').replace(/^_|_$/g, '');
+}
 
-  for (const { file, text } of SCRIPTS) {
-    const outPath = path.join(OUT_DIR, file);
-    if (fs.existsSync(outPath)) {
-      console.log(`  ⏭  ${file} (already exists)`);
-      skip++;
+async function main() {
+  console.log(`\n🎙️ Starting ElevenLabs Audio Generation Pipeline`);
+  console.log(`Voice ID: ${VOICE_ID} | Model: ${VOICE_MODEL}`);
+  console.log(`Total phrases to process: ${phrases.length}\n`);
+
+  const mapping = {};
+
+  for (let i = 0; i < phrases.length; i++) {
+    const { text, style } = phrases[i];
+    const cleanText = cleanString(text);
+    const fileName = `audio_${cleanText}_${i}.mp3`;
+    const destPath = path.join(outputDir, fileName);
+
+    const relativeWebPath = `/assets/audio/${fileName}`;
+    mapping[text] = relativeWebPath;
+
+    if (fs.existsSync(destPath)) {
+      console.log(`[${i + 1}/${phrases.length}] ⏩ Skipped (already exists): ${fileName}`);
       continue;
     }
+
+    if (!apiKey) continue;
+
+    console.log(`[${i + 1}/${phrases.length}] 🔊 Generating: "${text.substring(0, 40)}..." -> ${fileName}`);
+
+    const settings = VOICE_SETTINGS[style] || VOICE_SETTINGS.statement;
+
     try {
-      process.stdout.write(`  🔊 ${file} … `);
-      await tts(text, outPath);
-      console.log('✓');
-      ok++;
-      // Rate-limit: 2 req/s
-      await new Promise((r) => setTimeout(r, 500));
+      const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`, {
+        method: 'POST',
+        headers: {
+          'xi-api-key': apiKey,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text,
+          model_id: VOICE_MODEL,
+          voice_settings: settings,
+        }),
+      });
+
+      if (!response.ok) {
+        const errBody = await response.text();
+        throw new Error(`HTTP ${response.status}: ${errBody}`);
+      }
+
+      const arrayBuffer = await response.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      fs.writeFileSync(destPath, buffer);
+      console.log(`   ✅ Saved: ${destPath}`);
     } catch (e) {
-      console.log(`✗  ${e.message}`);
-      fail++;
+      console.error(`   ❌ Failed to generate phrase "${text}":`, e.message);
     }
   }
 
-  // Generate audioMap.js dynamically
-  const mapContent = {};
-  for (const { file, text } of SCRIPTS) {
-    mapContent[text] = `/assets/audio/${file}`;
-  }
-  const mapPath = path.join(__dirname, '..', 'src', 'utils', 'audioMap.js');
-  fs.writeFileSync(
-    mapPath,
-    `export const audioMap = ${JSON.stringify(mapContent, null, 2)};\n`
-  );
-  console.log(`\n📝 Generated src/utils/audioMap.js successfully.`);
+  // Write mapping to src/utils/audioMap.js
+  const mapContent = `// Auto-generated by generate_audio.js\n// Static asset mapping for offline generated narration phrases\n\nexport const audioMap = ${JSON.stringify(mapping, null, 2)};\n\nexport default audioMap;\n`;
+  fs.writeFileSync('./src/utils/audioMap.js', mapContent);
+  console.log("\n✨ Audio mapping updated in src/utils/audioMap.js!");
+}
 
-  console.log(`\n✅  Done — ${ok} generated, ${skip} skipped, ${fail} failed.`);
-})();
+main().catch(console.error);

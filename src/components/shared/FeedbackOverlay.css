@@ -1,0 +1,62 @@
+/* src/components/shared/FeedbackOverlay.css */
+.fb-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 46, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.fb-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 24px 28px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.fb-card.correct {
+  border-color: rgba(34, 197, 94, 0.4);
+  box-shadow: 0 0 35px rgba(34, 197, 94, 0.35);
+}
+
+.fb-card.incorrect {
+  border-color: rgba(239, 83, 80, 0.4);
+  box-shadow: 0 0 35px rgba(239, 83, 80, 0.35);
+}
+
+.fb-icon {
+  font-size: 3.2rem;
+  line-height: 1;
+}
+
+.fb-title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.fb-card.correct .fb-title {
+  color: #4ade80;
+}
+
+.fb-card.incorrect .fb-title {
+  color: #f87171;
+}
+
+.fb-explanation {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}

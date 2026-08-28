@@ -1,107 +1,238 @@
-import { useState } from 'react';
+// src/components/phases/ReflectPhase.jsx
+import React, { useState, useEffect, useRef } from 'react';
+import './ReflectPhase.css';
+import Mascot from '../shared/Mascot.jsx';
+import { BADGES } from '../../utils/badgeEngine.js';
+import { calcStars } from '../../utils/scoring.js';
+import { useAudio } from '../../hooks/useAudio.js';
+import { reflectNarration, reflectCompleteNarration } from '../../utils/narration.js';
+import { generateSessionQuestions } from '../../utils/shuffle.js';
+import questionBank from '../../data/questionBank.js';
 
-const REFLECT_QS = [
+const REFLECT_QUESTIONS = [
   {
-    q: 'What is the relationship between addition and subtraction?',
-    opts: [
-      'They undo each other — they are inverse operations ✓',
-      'They are the same operation',
-      'They are completely unrelated',
+    q: "1. How many number sentences (addition and subtraction) belong to a fact family of three different numbers?",
+    options: [
+      "4 number sentences (2 addition and 2 subtraction)",
+      "2 number sentences (only addition)",
+      "1 number sentence",
     ],
+    correct: 0,
   },
   {
-    q: 'How does knowing 48 + 35 = 83 help with subtraction?',
-    opts: [
-      'I instantly know 83−48=35 and 83−35=48 ✓',
-      "It doesn't help at all",
-      'I still need to count separately',
+    q: "2. If you know that 27 + 36 = 63, how does this help you solve 63 − 27?",
+    options: [
+      "The two parts add to the whole, so 63 − 27 must equal the other part, 36!",
+      "You have to count backwards 27 times one by one",
+      "Addition and subtraction are unrelated",
     ],
+    correct: 0,
   },
   {
-    q: 'What does a fact family triangle show?',
-    opts: [
-      'All 4 related addition and subtraction facts ✓',
-      'Only addition facts',
-      'How to count on a number line',
+    q: "3. What is the golden rule of a Fact Family Triangle?",
+    options: [
+      "The two bottom parts always add up to the top whole (Part + Part = Whole)",
+      "You always subtract the top whole from the bottom",
+      "The top number is always smaller than the bottom numbers",
     ],
-  },
-  {
-    q: 'How confident are you with subtraction within 100?',
-    opts: [
-      'Very confident! ⭐ I can use inverse relationships',
-      'Getting more confident 📈',
-      'Still practising — I\'ll keep going! 💪',
-    ],
+    correct: 0,
   },
 ];
 
-export default function ReflectPhase({ state, onDone }) {
-  const [answers, setAnswers] = useState({});
-  const allAnswered = REFLECT_QS.every((_, i) => answers[i] !== undefined);
+export default function ReflectPhase({ state, dispatch }) {
+  const [answers, setAnswers]     = useState({});
+  const [journal, setJournal]     = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const { narrate, stopAll, sounds } = useAudio(state?.audioEnabled ?? true);
+  const narrated = useRef(false);
+
+  const totalCorrect = state?.districtCorrect?.reduce((s, c) => s + (c || 0), 0) || 0;
+  const totalStars   = state?.districtScores?.reduce((s, sc) => {
+    if (sc === null || sc === undefined) return s;
+    return s + calcStars(sc);
+  }, 0) || 0;
+
+  useEffect(() => {
+    if (!narrated.current) {
+      narrated.current = true;
+      narrate(reflectNarration());
+    }
+    dispatch({ type: 'COMPLETE_PHASE', payload: 'reflect' });
+    return () => stopAll();
+  }, [dispatch, narrate, stopAll]);
+
+  function handleSelectOption(qIdx, optIdx) {
+    sounds.click();
+    setAnswers((prev) => ({ ...prev, [qIdx]: optIdx }));
+  }
+
+  function handleSubmit() {
+    setSubmitted(true);
+    stopAll();
+    sounds.badge();
+    narrate(reflectCompleteNarration());
+  }
+
+  function playAgain() {
+    dispatch({ type: 'RESET_SESSION' });
+    dispatch({ type: 'LOAD_QUESTIONS', payload: generateSessionQuestions(questionBank) });
+    dispatch({ type: 'SET_PHASE', payload: 'intro' });
+  }
+
+  const earnedBadges = BADGES.filter((b) => state?.badges?.includes(b.id));
+
+  if (submitted) {
+    return (
+      <div className="reflect-wrap">
+        <div className="trophy-card glass-card anim-bounce-in">
+          <div className="trophy-icon">🏆</div>
+          <h1 className="trophy-title headline">You're a Fact Family Grand Master!</h1>
+          <p className="trophy-sub subheadline" style={{ color: 'var(--gold)' }}>
+            Addition &amp; Subtraction Relationship Mastery Complete ✅
+          </p>
+
+          {/* Stats Breakdown */}
+          <div className="trophy-stats">
+            <div className="trophy-stat">
+              <span className="stat-value number-display">{totalCorrect}</span>
+              <span className="stat-label label-text">/ 100 Questions</span>
+            </div>
+            <div className="trophy-stat">
+              <span className="stat-value number-display">{state?.xp || 0}</span>
+              <span className="stat-label label-text">XP Earned ⭐</span>
+            </div>
+            <div className="trophy-stat">
+              <span className="stat-value number-display">{state?.maxStreak || 0}</span>
+              <span className="stat-label label-text">Best Streak 🔥</span>
+            </div>
+          </div>
+
+          {/* Stars */}
+          <div className="trophy-stars">
+            {[...Array(Math.min(Math.max(totalStars, 3), 30))].map((_, i) => (
+              <span key={i} style={{ fontSize: '1.3rem', animationDelay: `${i * 0.05}s` }} className="anim-bounce-in">
+                ⭐
+              </span>
+            ))}
+          </div>
+
+          {/* Badges */}
+          {earnedBadges.length > 0 && (
+            <div className="trophy-badges">
+              <p className="label-text" style={{ color: 'var(--text-muted)', textAlign: 'center', marginBottom: '6px' }}>
+                Badges Unlocked
+              </p>
+              <div className="badge-list">
+                {earnedBadges.map((b) => (
+                  <div key={b.id} className="badge-pill">
+                    <span style={{ fontSize: '1.3rem' }}>{b.icon}</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                      <span style={{ fontWeight: 800 }}>{b.name}</span>
+                      <span className="badge-desc label-text">{b.description}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="trophy-actions">
+            <button className="btn btn-primary trophy-cta" onClick={playAgain}>
+              🔄 Play Again
+            </button>
+            <button className="btn btn-outline" onClick={() => dispatch({ type: 'SET_PHASE', payload: 'intro' })}>
+              🏠 Home
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="reflect-phase">
-      <div className="phase-badge badge-reflect">Phase 5 · Reflect ✨</div>
+    <div className="reflect-wrap">
+      <div className="reflect-card glass-card anim-slide-up">
+        <div className="reflect-header">
+          <span className="reflect-badge">📓 Learning Reflection &amp; Scorecard</span>
+          <h2 className="reflect-title subheadline">Reflect on Your Math Journey</h2>
+        </div>
 
-      <div className="glass-card reflect-card">
-        <h2 className="reflect-title">🌟 Reflect on Your Learning</h2>
-        <p className="reflect-subtitle">
-          Think carefully about what you've discovered today!
-        </p>
+        <Mascot mood="curious" message="Let's check your key takeaways and review your scorecard!" size="sm" />
 
-        {/* Journey stats */}
-        <div className="reflect-stats">
-          {[
-            [`⭐ ${state.stars}`, 'Stars'], 
-            [`⚡ ${state.xp}`, 'XP'], 
-            [`🔥 ${state.maxStr}`, 'Best Streak']
-          ].map(([value, label]) => (
-            <div key={label} className="reflect-stat-item">
-              <div className="reflect-stat-value">{value}</div>
-              <div className="reflect-stat-label">{label}</div>
+        {/* Self-assessment Concept Check */}
+        <div className="reflect-quiz-container">
+          <p className="body-text" style={{ color: 'var(--gold)', fontWeight: 800 }}>
+            🧠 Concept Reflection Check:
+          </p>
+          {REFLECT_QUESTIONS.map((qObj, qIdx) => (
+            <div key={qIdx} className="reflect-q-item">
+              <p className="reflect-q-text">{qObj.q}</p>
+              <div className="reflect-opt-row">
+                {qObj.options.map((opt, oIdx) => {
+                  const isSelected = answers[qIdx] === oIdx;
+                  return (
+                    <button
+                      key={oIdx}
+                      className={`option-btn ${isSelected ? 'selected' : ''}`}
+                      onClick={() => handleSelectOption(qIdx, oIdx)}
+                      style={{ textAlign: 'left', minHeight: '44px', fontSize: '1rem', padding: '10px 14px' }}
+                    >
+                      <span>{opt}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           ))}
         </div>
 
-        {/* Reflection questions */}
-        {REFLECT_QS.map((rq, i) => (
-          <div key={i} className="reflect-question">
-            <h3 className="reflect-question-title">
-              {i + 1}. {rq.q}
-            </h3>
-            <div className="reflect-options">
-              {rq.opts.map((opt) => (
-                <div
-                  key={opt}
-                  className={`reflect-option ${answers[i] === opt ? 'selected' : ''}`}
-                  onClick={() => setAnswers((a) => ({ ...a, [i]: opt }))}
-                  role="radio"
-                  aria-checked={answers[i] === opt}
-                  tabIndex={0}
-                  onKeyDown={(e) => e.key === 'Enter' && setAnswers((a) => ({ ...a, [i]: opt }))}
-                >
-                  <div className="reflect-radio" />
-                  <span>{opt}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+        {/* Journal Entry */}
+        <div className="reflect-journal">
+          <label className="reflect-label body-text" htmlFor="journal-input">
+            Write one key math rule or fact you mastered:
+          </label>
+          <textarea
+            id="journal-input"
+            className="reflect-textarea"
+            placeholder="e.g. Part + Part = Whole, so Whole − Part = Other Part!"
+            value={journal}
+            onChange={(e) => setJournal(e.target.value)}
+            rows={2}
+            aria-label="Learning journal entry"
+          />
 
-      <button 
-        className="btn btn-g btn-lg btn-full reflect-complete-btn" 
-        disabled={!allAnswered} 
-        onClick={onDone}
-      >
-        Complete My Journey! 🌟
-      </button>
-      
-      {!allAnswered && (
-        <p className="reflect-hint">
-          Answer all {REFLECT_QS.length} questions to continue
-        </p>
-      )}
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '6px' }}>
+            <span style={{ fontSize: '0.8rem', color: '#a0a0b8', alignSelf: 'center' }}>Quick insert:</span>
+            {[
+              'Part 1 + Part 2 = Whole',
+              'Whole − Part 1 = Part 2',
+              'Addition and Subtraction are inverse operations',
+            ].map((ex) => (
+              <button
+                key={ex}
+                type="button"
+                onClick={() => setJournal(ex)}
+                className="quick-insert-btn"
+              >
+                ✨ {ex}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Performance Snapshot */}
+        <div className="reflect-stats">
+          <div className="reflect-stat-pill">⭐ {state?.xp || 0} XP Earned</div>
+          <div className="reflect-stat-pill">✅ {totalCorrect}/100 Correct</div>
+          <div className="reflect-stat-pill">🔥 Best Streak: {state?.maxStreak || 0}</div>
+        </div>
+
+        <div className="reflect-actions">
+          <button className="btn btn-primary btn-lg" onClick={handleSubmit}>
+            🌟 Submit Reflection &amp; View Trophy Scorecard!
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,17 +1,24 @@
-/**
- * clean_audio.js
- * Removes all generated audio files from public/assets/audio/
- * Usage: node scripts/clean_audio.js
- */
-import fs   from 'fs';
+// scripts/clean_audio.js
+import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { audioMap } from '../src/utils/audioMap.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const OUT_DIR   = path.join(__dirname, '..', 'public', 'assets', 'audio');
+const audioDir = './public/assets/audio';
 
-if (!fs.existsSync(OUT_DIR)) { console.log('Nothing to clean.'); process.exit(0); }
+if (fs.existsSync(audioDir)) {
+  const referencedFiles = new Set(Object.values(audioMap).map((p) => path.basename(p)));
+  const existingFiles = fs.readdirSync(audioDir);
 
-const files = fs.readdirSync(OUT_DIR).filter((f) => f.endsWith('.mp3'));
-files.forEach((f) => fs.unlinkSync(path.join(OUT_DIR, f)));
-console.log(`🗑  Removed ${files.length} audio file(s).`);
+  let deletedCount = 0;
+  for (const file of existingFiles) {
+    if (file.endsWith('.mp3') && !referencedFiles.has(file)) {
+      fs.unlinkSync(path.join(audioDir, file));
+      console.log(`🗑️ Deleted orphaned audio: ${file}`);
+      deletedCount++;
+    }
+  }
+
+  console.log(`\n🧹 Cleaned up ${deletedCount} unused audio files.`);
+} else {
+  console.log('No audio directory found to clean.');
+}

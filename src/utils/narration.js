@@ -1,110 +1,141 @@
-// Helpers to wrap text into specific ElevenLabs style structures
-export const say        = (text) => ({ text, style: 'statement' });
-export const ask        = (text) => ({ text, style: 'question' });
-export const cheer      = (text) => ({ text, style: 'encouragement' });
-export const emphasize  = (text) => ({ text, style: 'emphasis' });
-export const think      = (text) => ({ text, style: 'thinking' });
-export const celebrate  = (text) => ({ text, style: 'celebration' });
+// src/utils/narration.js
+// Narration script builder for Addition & Subtraction Quest
+// Strictly matches on-screen text 1:1
 
-export const wonderNarration = (step) => {
-  const steps = [
-    [
-      think("If 48 plus 35 equals 83... can you find two hidden subtraction secrets inside?")
-    ],
-    [
-      say("Addition and subtraction undo each other. They are called inverse operations, like a lock and its key!")
-    ],
-    [
-      say("Knowing one addition fact gives you two subtraction facts instantly! Let's discover how.")
-    ]
+export const say       = (text) => ({ text, style: 'statement' });
+export const ask       = (text) => ({ text, style: 'question' });
+export const cheer     = (text) => ({ text, style: 'celebration' });
+export const emphasize = (text) => ({ text, style: 'emphasis' });
+export const think     = (text) => ({ text, style: 'thinking' });
+export const instruct  = (text) => ({ text, style: 'instruction' });
+export const encourage = (text) => ({ text, style: 'encouragement' });
+
+export function wonderNarration() {
+  return [
+    say("Welcome to Addition and Subtraction Quest! Let's discover how addition unlocks subtraction!"),
+    say("Alex won sixty-three tokens at the school carnival. He played fun games and had twenty-seven tokens left."),
+    ask("How many tokens did he spend, and how can addition help us solve this subtraction puzzle without counting backwards?"),
+    cheer("Let's investigate the power of Fact Families and inverse operations!"),
   ];
-  return steps[step] ?? [];
-};
+}
 
-export const storyNarration = (panelIndex) => {
-  const panels = [
+export function storyNarration(panel) {
+  const scripts = [
     [
-      say("Lily and Max baked 63 sandwiches one morning.")
+      say("Alex had the best time at the school carnival, winning sixty-three shiny prize tokens!"),
+      say("He spent some tokens on the giant slide and carnival games."),
+      say("When he checked his pocket, he had twenty-seven tokens left."),
+      ask("His friend Emma asked: How many tokens did you spend, Alex?"),
+      think("Alex wondered how to find the missing part!"),
     ],
     [
-      say("By noon, only 27 sandwiches were left on the shelf.")
+      say("Alex tried to count backwards one by one from sixty-three down to twenty-seven, but he kept losing track."),
+      encourage("Emma smiled and said: You don't need to count backwards! You can use addition to unlock subtraction!"),
+      say("Addition and subtraction are partners that work together."),
+      ask("Twenty-seven plus what number equals sixty-three? Emma asked."),
+      cheer("Alex's eyes lit up with curiosity!"),
     ],
     [
-      say("Max scratched his head. How many sandwiches did we sell? I can't figure it out!")
+      say("Emma drew a magical Fact Family Triangle."),
+      say("At the top she wrote sixty-three — the whole total."),
+      say("At the bottom corners, she wrote twenty-seven and thirty-six."),
+      say("The two bottom parts always add up to the top whole! she explained."),
+      cheer("So twenty-seven plus thirty-six equals sixty-three, which means sixty-three minus twenty-seven equals thirty-six!"),
     ],
     [
-      say("Lily had an idea! She drew a fact family triangle with 63 at the top, 27 on one side, and a question mark on the other.")
+      say("Alex was amazed! From just three numbers — sixty-three, twenty-seven, and thirty-six — he could write four complete facts."),
+      say("Twenty-seven plus thirty-six is sixty-three. Thirty-six plus twenty-seven is sixty-three."),
+      say("Sixty-three minus twenty-seven is thirty-six. And sixty-three minus thirty-six is twenty-seven."),
+      cheer("They are a true fact family! Subtraction is simple when you know addition!"),
     ],
-    [
-      say("63 minus 27 equals 36. They sold 36 sandwiches! One addition fact revealed the answer instantly!")
-    ],
-    [
-      say("They wrote all four facts on the chalkboard: 27 plus 36 equals 63, 36 plus 27 equals 63, 63 minus 27 equals 36, and 63 minus 36 equals 27!")
-    ]
   ];
-  return panels[panelIndex] ?? [];
-};
 
-export const simulateNarration = (stationIndex) => {
-  const stations = [
+  return scripts[panel] || scripts[0];
+}
+
+export function simStationIntro(stationIdx) {
+  const intros = [
     [
-      say("Station A! Let's use base-ten blocks to take away and see subtraction in action.")
+      instruct("Welcome to Station A — Apple Orchard and Basket Lab!"),
+      instruct("Tap apples to place them into Basket A and Basket B to build the target whole. Then take away one basket to discover the inverse subtraction fact!"),
     ],
     [
-      say("Station B! Use the fact family triangle to find the missing number.")
+      instruct("Welcome to Station B — Fact Family Balance Scale and Triangle!"),
+      instruct("Place the missing part weight onto the scale to level it with the whole. Once balanced, tap the number cards to reveal all four fact sentences!"),
     ],
     [
-      say("Station C! Can you write the subtraction sentence that matches the addition sentence?")
-    ]
+      instruct("Welcome to Station C — The Math Inverse Machine!"),
+      instruct("Feed an addition fact into the machine gears, pull the lever, and build the twin inverse subtraction facts with the dynamic bar model!"),
+    ],
+    [
+      instruct("Welcome to Station D — Fact Detective and Error Buster!"),
+      instruct("Detective Pip found suspicious math scrolls with calculation mistakes. Inspect the clues, find the broken fact sentence, and fix it!"),
+    ],
   ];
-  return stations[stationIndex] ?? [];
-};
 
-export const correctNarration = (seed = 0) => {
-  const list = [
-    [cheer("Brilliant! You've got it!")],
-    [cheer("Excellent work! The inverse relationship helped you!")],
-    [cheer("Outstanding! You're a subtraction superstar!")]
+  return intros[stationIdx] || intros[0];
+}
+
+export function playQuestionNarration(questionText) {
+  return [
+    ask(questionText)
   ];
-  return list[seed % list.length];
-};
+}
 
-export const wrongNarration = (seed = 0) => {
-  const list = [
-    [say("Good try! Remember to use the fact family triangle.")],
-    [say("Not quite! Think about the inverse relationship.")]
+export function playCorrectNarration(streak = 1) {
+  if (streak >= 5) {
+    return [cheer("Incredible streak! You are unstoppable! 🔥")];
+  }
+  if (streak >= 3) {
+    return [cheer("Awesome! Three in a row! ⭐")];
+  }
+  return [cheer("Spot on! That's correct! 🎉")];
+}
+
+export function playWrongNarration() {
+  return [
+    think("Not quite — check the hint, think of the fact family triangle, and try again! 💡")
   ];
-  return list[seed % list.length];
-};
+}
 
-export const badgeNarration = (badgeId) => {
-  const map = {
-    curious_coder: [celebrate("Badge unlocked! Curious Coder! You completed the Wonder and Story phases!")],
-    sim_scientist: [celebrate("Badge unlocked! Sim Scientist! You completed all three simulation stations!")],
-    sub_solver:    [celebrate("Badge unlocked! Sub Solver! You scored over 80 correct answers!")],
-    inv_master:    [celebrate("Badge unlocked! Inverse Master! You scored perfect ten out of ten in a world!")],
-    streak_champ:  [celebrate("Badge unlocked! Streak Champion! You answered 12 questions in a row correctly!")],
-    journey_hero:  [celebrate("Badge unlocked! Journey Hero! You completed all five phases. What an achievement!")],
-  };
-  return map[badgeId] ?? [];
-};
+export function playHint1Narration() {
+  return [
+    encourage("Here's your first hint! Remember that Part One plus Part Two equals the Whole.")
+  ];
+}
 
-export const worldCompleteNarration = () => [
-  celebrate("Wonderful! You completed this world! Keep going to unlock the next challenge!")
-];
+export function playHint2Narration() {
+  return [
+    encourage("Here's your final clue! Subtract the known part from the whole to find the missing part.")
+  ];
+}
 
-export const allWorldsDoneNarration = () => [
-  celebrate("Amazing! You've completed all ten worlds! You are a true Subtraction Master!")
-];
+export function districtCompleteNarration() {
+  return [
+    cheer("World Complete! Spectacular job mastering this math world! 🌟")
+  ];
+}
 
-export const reflectIntroNarration = () => [
-  say("Let's take a moment to think about everything you've learned today.")
-];
+export function bossStartNarration() {
+  return [
+    emphasize("The Boss Battle begins! Answer correctly to defeat the boss and claim your badge!")
+  ];
+}
 
-export const resultsFinalNarration = () => [
-  celebrate("Congratulations! You've completed the Subtraction within 100 module. What a fantastic journey!")
-];
+export function bossWinNarration() {
+  return [
+    cheer("Victory! You defeated the boss and claimed the World Badge! 👑")
+  ];
+}
 
-export const welcomeNarration = () => [
-  say("Welcome to Subtraction within 100! Let's discover the secret connection between addition and subtraction.")
-];
+export function reflectNarration() {
+  return [
+    say("Welcome to the Reflect Phase! Let's review the key fact family rules and check your scorecard! 📓")
+  ];
+}
+
+export function reflectCompleteNarration() {
+  return [
+    cheer("Outstanding! You have mastered the relationship between addition and subtraction! You are a Grand Math Master! 🏆")
+  ];
+}

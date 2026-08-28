@@ -1,0 +1,357 @@
+/* src/components/simulations/Stations.css */
+
+/* ─── Base Station Wrap ──────────────────────────────────────────────────── */
+.station-wrap {
+  flex: 1;
+  min-height: 0;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 6px 12px;
+  gap: 8px;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* ─── Header ─────────────────────────────────────────────────────────────── */
+.station-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.station-title {
+  color: #fcd34d;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1.05rem, 1.3vw, 1.3rem);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.station-target-box {
+  background: rgba(245, 158, 11, 0.22);
+  border: 1.5px solid #f59e0b;
+  border-radius: 12px;
+  padding: 3px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.station-target-label {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #cbd5e1;
+  text-transform: uppercase;
+}
+
+.station-target-num {
+  color: #ffd54f;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.15rem;
+}
+
+/* ─── 2-Column Responsive Grid ──────────────────────────────────────────── */
+.station-grid-2col {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 12px;
+  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+  max-height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.station-col-left,
+.station-col-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-height: 0;
+  max-height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* ─── Station A: Interactive Apple Orchard & Harvester Simulator ─────────── */
+.orchard-sim-card {
+  background: linear-gradient(180deg, rgba(16, 28, 60, 0.85) 0%, rgba(10, 18, 40, 0.95) 100%);
+  border: 1.5px solid rgba(74, 222, 128, 0.3);
+  border-radius: 18px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.tree-canvas-area {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sim-tree-svg {
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
+  animation: treeSway 6s ease-in-out infinite alternate;
+}
+
+@keyframes treeSway {
+  0%   { transform: rotate(-1deg); }
+  100% { transform: rotate(1deg); }
+}
+
+.flying-apple {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+.flying-apple:hover {
+  transform: scale(1.3);
+}
+
+.baskets-stage-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  gap: 10px;
+  position: relative;
+  z-index: 2;
+}
+
+.sim-basket-unit {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.07);
+  border: 2px dashed rgba(255, 255, 255, 0.25);
+  border-radius: 14px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 90px;
+  transition: all 0.3s ease;
+}
+
+.sim-basket-unit.filled {
+  border-color: #4ade80;
+  background: rgba(34, 197, 94, 0.15);
+}
+
+.sim-basket-unit.cart-away {
+  animation: driveAway 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes driveAway {
+  0% { transform: translateX(0) scale(1); opacity: 1; }
+  50% { transform: translateX(-40px) scale(0.9); opacity: 0.6; }
+  100% { transform: translateX(-150px) scale(0.5); opacity: 0; pointer-events: none; }
+}
+
+.cart-vehicle-overlay {
+  position: absolute;
+  bottom: 10px;
+  left: -100px;
+  font-size: 2.2rem;
+  z-index: 5;
+  transition: left 0.8s ease;
+}
+
+/* ─── Station B: Metallic Scale & Light Beam Portal ──────────────────────── */
+.scale-sim-card {
+  background: linear-gradient(180deg, rgba(28, 20, 70, 0.85) 0%, rgba(14, 10, 45, 0.95) 100%);
+  border: 1.5px solid rgba(251, 176, 59, 0.35);
+  border-radius: 18px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.beam-portal-glow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  height: 100%;
+  background: radial-gradient(ellipse at center, rgba(254, 202, 87, 0.25) 0%, transparent 70%);
+  pointer-events: none;
+  animation: pulseGlow 2s infinite alternate;
+}
+
+@keyframes pulseGlow {
+  0% { opacity: 0.3; transform: translateX(-50%) scale(0.95); }
+  100% { opacity: 0.8; transform: translateX(-50%) scale(1.05); }
+}
+
+/* ─── Station C: Steampunk Gears & Hydraulic Lever ───────────────────────── */
+.machine-sim-card {
+  background: radial-gradient(circle at 50% 40%, rgba(55, 30, 115, 0.8) 0%, rgba(15, 10, 45, 0.95) 100%);
+  border: 2px solid rgba(139, 92, 246, 0.45);
+  border-radius: 18px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.gears-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  position: relative;
+}
+
+.gear-cog-1 {
+  font-size: 2.2rem;
+  display: inline-block;
+  animation: spinCW 8s linear infinite;
+}
+
+.gear-cog-2 {
+  font-size: 1.6rem;
+  display: inline-block;
+  animation: spinCCW 6s linear infinite;
+}
+
+.gear-cog-fast {
+  animation-duration: 1.5s !important;
+}
+
+@keyframes spinCW {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spinCCW {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+.steam-puff {
+  position: absolute;
+  top: -15px;
+  font-size: 1.4rem;
+  opacity: 0;
+  animation: steamRise 1.2s ease-out forwards;
+}
+
+@keyframes steamRise {
+  0% { transform: translateY(0) scale(0.6); opacity: 0.9; }
+  100% { transform: translateY(-30px) scale(1.4); opacity: 0; }
+}
+
+.lever-handle {
+  cursor: pointer;
+  background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%);
+  border: 2px solid #fecaca;
+  border-radius: 9999px;
+  padding: 6px 18px;
+  color: white;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.5);
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lever-handle:hover {
+  transform: translateY(2px) scale(1.05);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.7);
+}
+
+.lever-handle:active {
+  transform: translateY(6px);
+}
+
+/* ─── Station D: Detective Clue Board & Lens ─────────────────────────────── */
+.detective-sim-card {
+  background: linear-gradient(180deg, rgba(30, 20, 60, 0.9) 0%, rgba(12, 8, 35, 0.95) 100%);
+  border: 1.5px solid rgba(245, 158, 11, 0.35);
+  border-radius: 18px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  position: relative;
+}
+
+.magnifier-lens-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1.5px solid #f59e0b;
+  border-radius: 20px;
+  padding: 4px 12px;
+  color: #ffd54f;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.busted-stamp-seal {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.25rem;
+  color: #ef4444;
+  border: 3px solid #ef4444;
+  border-radius: 8px;
+  padding: 2px 10px;
+  text-transform: uppercase;
+  transform: rotate(-12deg);
+  display: inline-block;
+  animation: stampImpact 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes stampImpact {
+  0% { transform: scale(3) rotate(15deg); opacity: 0; }
+  100% { transform: scale(1) rotate(-12deg); opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .station-grid-2col {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+}

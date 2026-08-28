@@ -1,105 +1,143 @@
-import { useState, useEffect, useCallback } from 'react';
-import { STORY_SLIDES } from '../../data/storyPanels.js';
+// src/components/phases/StoryPhase.jsx
+import React, { useEffect, useState } from 'react';
+import './StoryPhase.css';
+import { STORY_PANELS } from '../../data/storyContent.js';
+import { useAudio } from '../../hooks/useAudio.js';
+import { storyNarration } from '../../utils/narration.js';
 
-export default function StoryPhase({ onComplete }) {
-  const [slide, setSlide] = useState(0);
-  const [anim, setAnim] = useState(false);
-  const [textVis, setTextVis] = useState(false);
-  const [hlVis, setHlVis] = useState(false);
-
-  const s = STORY_SLIDES[slide];
-  const isLast = slide === STORY_SLIDES.length - 1;
-  const pct = ((slide + 1) / STORY_SLIDES.length) * 100;
+function StoryImage({ panel }) {
+  const [imgError, setImgError] = useState(false);
+  const imageSrc = `/assets/story/${panel.panel + 1}.png`;
 
   useEffect(() => {
-    setTextVis(false); setHlVis(false);
-    const t1 = setTimeout(() => setTextVis(true), 100);
-    const t2 = setTimeout(() => setHlVis(true), 800);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, [slide]);
-
-  const goNext = useCallback(() => {
-    if (anim) return;
-    setAnim(true);
-    setTimeout(() => {
-      if (isLast) { onComplete(); } else { setSlide(i => i + 1); }
-      setAnim(false);
-    }, 400);
-  }, [anim, isLast, onComplete]);
-
-  const goPrev = useCallback(() => {
-    if (anim || slide === 0) return;
-    setAnim(true);
-    setTimeout(() => { setSlide(i => i - 1); setAnim(false); }, 400);
-  }, [anim, slide]);
+    setImgError(false);
+  }, [panel.panel]);
 
   return (
-    <div className="story-phase">
-      <div className="story-progress">
-        <div className="story-progress-bar">
-          <div className="story-progress-fill" style={{ width: `${pct}%` }} />
+    <div className="story-image-container">
+      {!imgError ? (
+        <img
+          key={panel.panel}
+          src={imageSrc}
+          alt={panel.title}
+          onError={() => setImgError(true)}
+          className="story-full-img"
+        />
+      ) : (
+        <div className="story-img-fallback" style={{ background: panel.imageBg }}>
+          <span className="fallback-emoji">{panel.imageEmoji}</span>
+          <span className="fallback-title">{panel.title}</span>
+          <span className="fallback-highlight">{panel.highlight}</span>
         </div>
-        <span className="story-progress-label">{slide + 1} / {STORY_SLIDES.length}</span>
-      </div>
+      )}
+    </div>
+  );
+}
 
-      <div className={`story-card ${anim ? 'flipping' : ''}`}>
-        <div className="story-image-section">
-          <img
-            src={s.image}
-            alt={s.title}
-            className="story-image"
-            onError={e => {
-              e.target.style.display = 'none';
-              e.target.parentElement.style.background = 'rgba(99,102,241,0.15)';
-              e.target.parentElement.innerHTML =
-                `<div style="font-size:5rem;display:flex;align-items:center;justify-content:center;height:100%">🏫</div>`;
-            }}
-          />
-          <div className="story-image-overlay" />
-        </div>
+export default function StoryPhase({ state, dispatch }) {
+  const panel = STORY_PANELS[state?.storyPanel || 0] || STORY_PANELS[0];
+  const { narrate, stopAll } = useAudio(state?.audioEnabled ?? true);
+  const totalPanels = STORY_PANELS.length;
+  const isLastPanel = (state?.storyPanel || 0) >= totalPanels - 1;
 
-        <div className="story-text-section">
-          <h2 className="story-title">{s.title}</h2>
-          <p className={`story-text ${textVis ? 'revealed' : ''}`}>{s.text}</p>
-          <div className={`story-highlight ${hlVis ? 'visible' : ''}`}>
-            <span>✨</span>
-            <span className="story-highlight-text">{s.highlight}</span>
-            <span>✨</span>
+  useEffect(() => {
+    stopAll();
+    const timer = setTimeout(() => narrate(storyNarration(state?.storyPanel || 0)), 300);
+    return () => {
+      clearTimeout(timer);
+      stopAll();
+    };
+  }, [state?.storyPanel, narrate, stopAll]);
+
+  function handleNext() {
+    stopAll();
+    dispatch({ type: 'NEXT_STORY_PANEL' });
+  }
+
+  function handlePrev() {
+    stopAll();
+    dispatch({ type: 'PREV_STORY_PANEL' });
+  }
+
+  return (
+    <div className="story-wrap">
+      <div className="story-container anim-slide-up" key={state?.storyPanel || 0}>
+        {/* Top Progress Bar Row */}
+        <div className="story-progress-bar-row">
+          <div className="story-track">
+            <div
+              className="story-fill"
+              style={{ width: `${(((state?.storyPanel || 0) + 1) / totalPanels) * 100}%` }}
+            />
           </div>
-          <div className="story-mascot">
-            <div className="mascot" style={{ width: 38, height: 38, fontSize: '1.1rem' }}>🤖</div>
-            <div className="speech-bubble" style={{ fontSize: '0.75rem', padding: '6px 10px', maxWidth: 160 }}>
-              {s.mascotText}
+          <span className="story-counter-text">{(state?.storyPanel || 0) + 1} / {totalPanels}</span>
+        </div>
+
+        {/* Main Horizontal Story Card */}
+        <div className="story-main-card">
+          {/* Left: Complete Image in full original frame */}
+          <div className="story-image-section">
+            <StoryImage panel={panel} />
+          </div>
+
+          {/* Right: Story Content */}
+          <div className="story-content-section">
+            <div>
+              <h2 className="story-title">{panel.title}</h2>
+              <p className="story-text" style={{ marginTop: '10px' }}>{panel.text}</p>
+            </div>
+
+            {panel.highlight && (
+              <div className="story-prompt-pill">
+                <span className="prompt-icon">💡</span>
+                <span className="prompt-text">{panel.highlight}</span>
+              </div>
+            )}
+
+            {/* Character Badge */}
+            <div className="story-character-badge">
+              <div className="character-avatar-circle">
+                <span className="character-emoji">{panel.characterEmoji || '👦'}</span>
+              </div>
+              <span className="character-name">{panel.character || 'Alex'}</span>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="story-nav">
-        <button
-          className="btn btn-outline btn-sm"
-          onClick={goPrev}
-          disabled={slide === 0}
-          style={{ opacity: slide === 0 ? 0.3 : 1 }}
-        >
-          ← Back
-        </button>
+        {/* Bottom Bar: Centered Dots + Action Buttons */}
+        <div className="story-footer-nav">
+          <div className="story-dots-center">
+            {STORY_PANELS.map((_, i) => (
+              <span
+                key={i}
+                className={`story-nav-dot ${i === (state?.storyPanel || 0) ? 'active' : ''} ${i < (state?.storyPanel || 0) ? 'done' : ''}`}
+              />
+            ))}
+          </div>
 
-        <div className="story-dots">
-          {STORY_SLIDES.map((_, i) => (
-            <div
-              key={i}
-              className={`story-dot ${i === slide ? 'active' : i < slide ? 'completed' : ''}`}
-            />
-          ))}
+          <div className="story-nav-actions">
+            {(state?.storyPanel || 0) > 0 && (
+              <button
+                type="button"
+                id="story-prev-btn"
+                className="btn btn-outline btn-sm"
+                onClick={handlePrev}
+                aria-label="Previous story"
+              >
+                ← Back
+              </button>
+            )}
+            <button
+              type="button"
+              id="story-next-btn"
+              className="btn btn-primary btn-sm"
+              onClick={handleNext}
+              aria-label={isLastPanel ? 'Start Simulating' : 'Next story'}
+            >
+              {!isLastPanel ? 'Next →' : 'Simulate! 🧪'}
+            </button>
+          </div>
         </div>
-
-        <button
-          className={`btn ${isLast ? 'btn-green' : 'btn-primary'} btn-sm`}
-          onClick={goNext}
-        >
-          {isLast ? "🚀 Let's Explore!" : 'Next →'}
-        </button>
       </div>
     </div>
   );
