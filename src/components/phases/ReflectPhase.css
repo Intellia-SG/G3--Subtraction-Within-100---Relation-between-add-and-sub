@@ -7,17 +7,17 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12px 16px;
+  padding: 8px 12px;
   box-sizing: border-box;
 }
 
 .reflect-card {
   width: 100%;
   max-width: 760px;
-  padding: clamp(16px, 2.5vh, 28px) clamp(16px, 2.5vw, 28px);
+  padding: clamp(12px, 2.2vh, 24px) clamp(12px, 2.2vw, 24px);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
   box-sizing: border-box;
 }
 
@@ -25,7 +25,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   text-align: center;
 }
 
@@ -33,59 +33,62 @@
   background: rgba(251, 176, 59, 0.15);
   border: 1px solid rgba(251, 176, 59, 0.35);
   border-radius: 9999px;
-  padding: 4px 14px;
+  padding: 3px 12px;
   color: #fcd34d;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
 }
 
 .reflect-title {
   color: #ffffff;
   margin: 0;
+  font-size: clamp(1.15rem, 1.8vw, 1.45rem);
 }
 
 .reflect-quiz-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 14px;
+  border-radius: 14px;
+  padding: 12px;
+  box-sizing: border-box;
 }
 
 .reflect-q-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .reflect-q-text {
   font-family: var(--font-display);
-  font-size: 0.98rem;
+  font-size: 0.92rem;
   font-weight: 800;
   color: #ffffff;
   margin: 0;
+  line-height: 1.35;
 }
 
 .reflect-opt-row {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 /* ─── Learning Journal ───────────────────────────────────────────────────── */
 .reflect-journal {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .reflect-label {
   color: #cbd5e1;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 0.88rem;
 }
 
 .reflect-textarea {
@@ -93,10 +96,10 @@
   background: rgba(255, 255, 255, 0.08);
   border: 1.5px solid rgba(255, 255, 255, 0.18);
   border-radius: 12px;
-  padding: 10px 14px;
+  padding: 8px 12px;
   color: #ffffff;
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 600;
   resize: vertical;
   box-sizing: border-box;
@@ -112,8 +115,8 @@
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 9999px;
-  padding: 4px 10px;
-  font-size: 0.78rem;
+  padding: 3px 8px;
+  font-size: 0.74rem;
   font-weight: 700;
   color: #fcd34d;
   cursor: pointer;
@@ -127,7 +130,7 @@
 
 .reflect-stats {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -135,77 +138,81 @@
 .reflect-stat-pill {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 12px;
-  padding: 6px 12px;
+  border-radius: 10px;
+  padding: 5px 10px;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   color: #ffd54f;
 }
 
 .reflect-actions {
   display: flex;
   justify-content: center;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 /* ─── Trophy Scorecard Card ──────────────────────────────────────────────── */
 .trophy-card {
   width: 100%;
   max-width: 680px;
-  padding: 28px;
+  padding: 20px 16px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   box-sizing: border-box;
 }
 
 .trophy-icon {
-  font-size: 4rem;
+  font-size: 3.2rem;
   line-height: 1;
 }
 
 .trophy-title {
   color: #ffffff;
   margin: 0;
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
 }
 
 .trophy-sub {
   margin: 0;
+  font-size: clamp(0.95rem, 1.4vw, 1.15rem);
 }
 
 .trophy-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 8px;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .trophy-stat {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 14px;
-  padding: 12px;
+  border-radius: 12px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
 }
 
 .stat-value {
   color: #ffd54f;
+  font-size: 1.3rem;
 }
 
 .stat-label {
   color: #cbd5e1;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
 }
 
 .trophy-stars {
   display: flex;
-  gap: 4px;
+  gap: 3px;
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -213,14 +220,14 @@
 .trophy-badges {
   width: 100%;
   background: rgba(0, 0, 0, 0.25);
-  border-radius: 16px;
-  padding: 12px;
+  border-radius: 14px;
+  padding: 10px;
   box-sizing: border-box;
 }
 
 .badge-list {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -228,29 +235,30 @@
 .badge-pill {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 12px;
-  padding: 6px 12px;
-  font-size: 0.88rem;
+  border-radius: 10px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
 }
 
 .badge-desc {
   color: var(--text-muted);
-  font-size: 0.76rem;
+  font-size: 0.7rem;
 }
 
 .trophy-actions {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
 @media (max-width: 540px) {
   .trophy-stats {
     grid-template-columns: 1fr;
+    gap: 6px;
   }
 }

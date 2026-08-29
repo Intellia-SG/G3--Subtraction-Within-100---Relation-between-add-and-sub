@@ -3,18 +3,18 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   max-width: 100%;
   box-sizing: border-box;
 }
 
 .progress-bar-pill {
-  background: rgba(20, 20, 45, 0.78);
-  padding: 8px 20px;
+  background: rgba(20, 20, 45, 0.85);
+  padding: 6px 18px;
   border-radius: 40px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.16);
@@ -24,19 +24,19 @@
 }
 
 .audio-btn {
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
   border-radius: 50%;
-  background: rgba(20, 20, 45, 0.78);
+  background: rgba(20, 20, 45, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.18);
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   display: flex;
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  transition: var(--transition);
+  transition: var(--transition-fast);
   color: var(--text-primary);
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
@@ -47,7 +47,7 @@
 .audio-btn:hover {
   background: rgba(255, 255, 255, 0.24);
   border-color: var(--gold);
-  transform: scale(1.08);
+  transform: scale(1.06);
 }
 
 .audio-btn:active {
@@ -57,21 +57,21 @@
 .step-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   user-select: none;
   transition: opacity 0.2s ease;
   cursor: pointer;
 }
 
 .step-circle {
-  width: 30px;
-  height: 30px;
-  min-width: 30px;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.88rem;
+  font-size: 0.84rem;
   font-weight: 900;
   color: #fff;
   transition: all 0.2s ease;
@@ -96,13 +96,13 @@
 }
 
 .step-label {
-  font-family: 'Fredoka', 'Quicksand', sans-serif;
-  font-size: 1rem;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
   font-weight: 800;
   color: #a0a0b8;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 
 .step-item.active .step-label {
@@ -117,14 +117,14 @@
 .step-divider {
   color: #4a4a5e;
   font-weight: 900;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 
 @media (max-width: 768px) {
   .step-label-icon { display: none; }
   .step-label { display: none; }
   .progress-bar-nav { gap: 6px; }
-  .progress-bar-pill { gap: 4px; padding: 4px 8px; }
+  .progress-bar-pill { gap: 4px; padding: 4px 10px; }
   .step-circle { width: 26px; height: 26px; min-width: 26px; font-size: 0.76rem; }
   .step-divider { font-size: 0.6rem; }
   .audio-btn {
@@ -132,5 +132,18 @@
     height: 34px;
     min-width: 34px;
     font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .progress-bar-nav { gap: 4px; }
+  .progress-bar-pill { gap: 3px; padding: 3px 6px; }
+  .step-circle { width: 23px; height: 23px; min-width: 23px; font-size: 0.72rem; }
+  .step-divider { font-size: 0.55rem; }
+  .audio-btn {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    font-size: 0.9rem;
   }
 }

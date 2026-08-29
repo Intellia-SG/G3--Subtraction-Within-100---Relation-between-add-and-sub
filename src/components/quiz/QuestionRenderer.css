@@ -3,38 +3,38 @@
   width: 100%;
   max-width: 680px;
   margin: 0 auto;
-  padding: clamp(14px, 2.2vh, 22px) clamp(14px, 2.5vw, 22px);
+  padding: clamp(10px, 1.8vh, 18px) clamp(12px, 2.2vw, 20px);
   display: flex;
   flex-direction: column;
-  gap: clamp(10px, 1.4vh, 16px);
+  gap: clamp(8px, 1.2vh, 14px);
   box-sizing: border-box;
 }
 
 .qr-category-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   background: rgba(251, 176, 59, 0.15);
   border: 1px solid rgba(251, 176, 59, 0.35);
   border-radius: var(--radius-pill, 40px);
-  padding: 4px 12px;
+  padding: 3px 10px;
   color: #fcd34d;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 0.84rem;
+  font-size: 0.8rem;
   align-self: flex-start;
 }
 
 .cat-icon {
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .qr-question {
   font-family: var(--font-display);
-  font-size: clamp(1.15rem, 1.6vw + 0.3rem, 1.45rem);
+  font-size: clamp(1.05rem, 1.4vw + 0.3rem, 1.35rem);
   font-weight: 800;
   color: #ffffff;
-  line-height: 1.4;
+  line-height: 1.35;
   margin: 0;
 }
 
@@ -48,37 +48,61 @@
 .qr-hint {
   background: rgba(251, 176, 59, 0.12);
   border: 1.5px solid rgba(251, 176, 59, 0.35);
-  border-radius: 14px;
-  padding: 10px 14px;
+  border-radius: 12px;
+  padding: 8px 12px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   color: #ffd54f;
   font-family: var(--font-body);
   font-weight: 700;
-  font-size: 0.95rem;
-  line-height: 1.4;
+  font-size: 0.9rem;
+  line-height: 1.35;
 }
 
 .hint-icon {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
 }
 
 .qr-actions-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  padding-top: 4px;
+  gap: 8px;
+  padding-top: 2px;
 }
 
 .qr-nav-btns {
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
 @media (max-width: 480px) {
+  .qr-wrap {
+    padding: 10px 10px;
+    gap: 8px;
+  }
+  .qr-question {
+    font-size: 1.05rem;
+  }
+  .options-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
   .qr-actions-row {
     flex-wrap: wrap;
+    gap: 6px;
+  }
+  .qr-nav-btns {
+    flex: 1;
+    justify-content: flex-end;
+  }
+  .qr-nav-btns .btn {
+    font-size: 0.82rem;
+    padding: 6px 10px;
+  }
+  .hint-btn {
+    font-size: 0.82rem;
+    padding: 6px 10px;
   }
 }
