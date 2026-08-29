@@ -25,7 +25,7 @@
   align-items: stretch;
   position: relative;
   padding-top: 58px;
-  padding-bottom: 6px;
+  padding-bottom: max(60px, calc(40px + env(safe-area-inset-bottom, 20px)));
   box-sizing: border-box;
 }
 
@@ -97,49 +97,62 @@
   box-sizing: border-box;
 }
 
-/* ─── Responsive adjustments ────────────────────────────────────────────── */
+/* ─── Responsive Adjustments for Phones ──────────────────────────────────── */
 @media (max-width: 768px) {
   .app-header {
-    height: 50px;
+    height: 52px;
     padding: 0 8px;
   }
   .home-btn {
     top: 7px;
     left: 8px;
-    padding: 4px 10px;
+    padding: 5px 12px;
     font-size: 0.84rem;
-    min-height: 32px;
+    min-height: 34px;
   }
   .header-progress {
     top: 7px;
   }
   .phase-content {
-    padding-top: 50px;
-    padding-bottom: max(60px, calc(40px + env(safe-area-inset-bottom, 20px)));
-    height: calc(100vh - 50px);
+    padding-top: 52px;
+    padding-bottom: max(65px, calc(45px + env(safe-area-inset-bottom, 25px)));
+    height: calc(100vh - 52px);
   }
 }
 
 @media (max-width: 540px) {
   .app-header {
-    height: 46px;
+    height: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 6px;
   }
   .home-btn {
-    top: 6px;
-    left: 6px;
-    padding: 4px 8px;
-    gap: 0;
-    min-height: 30px;
+    position: static;
+    top: auto;
+    left: auto;
+    padding: 5px 8px;
+    gap: 2px;
+    min-height: 32px;
+    flex-shrink: 0;
   }
   .home-btn .home-text {
     display: none;
   }
   .header-progress {
-    top: 6px;
+    position: static;
+    top: auto;
+    left: auto;
+    transform: none;
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    margin-left: 6px;
   }
   .phase-content {
-    padding-top: 46px;
-    padding-bottom: max(70px, calc(45px + env(safe-area-inset-bottom, 25px)));
-    height: calc(100vh - 46px);
+    padding-top: 48px;
+    padding-bottom: max(75px, calc(50px + env(safe-area-inset-bottom, 30px)));
+    height: calc(100vh - 48px);
   }
 }
